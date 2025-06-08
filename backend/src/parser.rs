@@ -38,9 +38,12 @@ impl Parser {
             _ => None,
         }
     }
-
+    /**
+     * Parse the let variable keyword
+     */
     fn parse_let_stmt(&mut self) -> Option<Stmt> {
-        self.advance(); // consume 'let'
+        // consume 'let'
+        self.advance();
 
         // Expect identifier
         let var_name = if let Token::Ident(name) = &self.current {
@@ -48,11 +51,13 @@ impl Parser {
         } else {
             return None;
         };
-        self.advance(); // consume identifier
+        // consume identifier
+        self.advance();
 
-        // Optional colon + type
+        // This is for the optional colon + type syntax
         let var_type = if self.current == Token::Colon {
-            self.advance(); // consume ':'
+            // consume ':'
+            self.advance();
             self.parse_type()?
         } else {
             // Default type, e.g. Int or a placeholder
@@ -63,7 +68,8 @@ impl Parser {
         if self.current != Token::Assign {
             return None;
         }
-        self.advance(); // consume '='
+        // consume '='
+        self.advance();
 
         // Parse expression
         let expr = self.parse_expr()?;
@@ -72,11 +78,15 @@ impl Parser {
         if self.current != Token::Semicolon {
             return None;
         }
-        self.advance(); // consume ';'
+        // consume ';'
+        self.advance();
 
         Some(Stmt::Let(var_type, var_name, expr))
     }
 
+    /**
+     * This will parse a data type
+     */
     fn parse_type(&mut self) -> Option<Type> {
         match &self.current {
             Token::Int => {
@@ -99,6 +109,9 @@ impl Parser {
         }
     }
 
+    /**
+     * This is for parsing the print() statement
+     */
     fn parse_print_stmt(&mut self) -> Option<Stmt> {
         // consume 'print'
         self.advance();
@@ -126,6 +139,9 @@ impl Parser {
         Some(Stmt::Print(expr))
     }
 
+    /**
+     * This is for parsing the while() loop statement
+     */
     fn parse_while_stmt(&mut self) -> Option<Stmt> {
         // consume 'while'
         self.advance();
@@ -173,6 +189,7 @@ impl Parser {
         self.parse_or_expr()
     }
 
+    // Parse the OR expression
     fn parse_or_expr(&mut self) -> Option<Expr> {
         let mut left = self.parse_and_expr()?;
         while self.current == Token::Or {
@@ -183,6 +200,7 @@ impl Parser {
         Some(left)
     }
 
+    // Parse the AND expression
     fn parse_and_expr(&mut self) -> Option<Expr> {
         let mut left = self.parse_equality_expr()?;
         while self.current == Token::And {
@@ -192,7 +210,7 @@ impl Parser {
         }
         Some(left)
     }
-
+    // Parse the equality expression
     fn parse_equality_expr(&mut self) -> Option<Expr> {
         let mut left = self.parse_rel_expr()?;
         while self.current == Token::Eq || self.current == Token::Neq {
@@ -207,7 +225,7 @@ impl Parser {
         }
         Some(left)
     }
-
+    // This is for parsing different comparison operators
     fn parse_rel_expr(&mut self) -> Option<Expr> {
         let mut left = self.parse_add_expr()?;
 
@@ -232,7 +250,7 @@ impl Parser {
 
         Some(left)
     }
-
+    // This is for parsing the addition sign
     fn parse_add_expr(&mut self) -> Option<Expr> {
         let mut left = self.parse_mul_expr()?;
         while self.current == Token::Plus || self.current == Token::Minus {
@@ -247,7 +265,7 @@ impl Parser {
         }
         Some(left)
     }
-
+    // This is for parsing the multiplication sign, and handles division and modulo
     fn parse_mul_expr(&mut self) -> Option<Expr> {
         let mut left = self.parse_unary_expr()?;
         while self.current == Token::Star
@@ -266,7 +284,7 @@ impl Parser {
         }
         Some(left)
     }
-
+    // This is for parsing the unary expressions
     fn parse_unary_expr(&mut self) -> Option<Expr> {
         if self.current == Token::Not {
             self.advance();
@@ -275,12 +293,12 @@ impl Parser {
         } else if self.current == Token::Minus {
             self.advance();
             let expr = self.parse_unary_expr()?;
-            Some(Expr::Neg(Box::new(expr))) // You need to add Expr::Neg variant
+            Some(Expr::Neg(Box::new(expr)))
         } else {
             self.parse_term()
         }
     }
-
+    // this is for parsing different terms
     fn parse_term(&mut self) -> Option<Expr> {
         match &self.current {
             Token::Number(n) => {
@@ -320,6 +338,7 @@ impl Parser {
             _ => None,
         }
     }
+    // This is for parsing assignment operators
     fn parse_assign_stmt(&mut self) -> Option<Stmt> {
         // Assume current is Token::Ident
         let name = if let Token::Ident(n) = &self.current {
@@ -327,19 +346,22 @@ impl Parser {
         } else {
             return None;
         };
-        self.advance(); // consume identifier
+        // consume identifier
+        self.advance(); 
 
         if self.current != Token::Assign {
             return None;
         }
-        self.advance(); // consume '='
+        // consume '='
+        self.advance(); 
 
         let expr = self.parse_expr()?;
 
         if self.current != Token::Semicolon {
             return None;
         }
-        self.advance(); // consume ';'
+        // consume ';'
+        self.advance(); 
 
         Some(Stmt::Assign(name, expr))
     }

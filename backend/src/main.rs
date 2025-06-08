@@ -1,35 +1,31 @@
-// Import the modules defining the Abstract Syntax Tree, interpreter, lexer, and parser
+use std::env;
+use std::fs;
+
 mod ast;
 mod interpreter;
 mod lexer;
 mod parser;
 
-// Bring the Interpreter, Lexer, and Parser types into scope for easier access
 use interpreter::Interpreter;
 use lexer::Lexer;
 use parser::Parser;
 
 fn main() {
-    // Define a simple source code string with variable declarations and print statements
-    let source = r#"
-let count = 10;
-print(count);
-count = count + 1;
-print(count);
-"#;
+    // Get the first CLI argument as the filename, or fallback to a default
+    let filename = env::args().nth(1).unwrap_or_else(|| "example.finn".to_string());
 
-    // Initialize a lexer with the source code to tokenize the input
-    let lexer = Lexer::new(source);
+    // Read the source code from the file
+    let source = fs::read_to_string(&filename)
+        .expect("Failed to read the .finn source file");
 
-    // Create a parser that consumes tokens from the lexer to produce an AST
+    // Tokenize the source
+    let lexer = Lexer::new(&source);
+
+    // Parse tokens into AST
     let mut parser = Parser::new(lexer);
-
-    // Parse the source code into an Abstract Syntax Tree (AST) representing the program
     let program = parser.parse();
 
-    // Create a new interpreter instance for executing the parsed program
+    // Interpret the AST
     let mut interpreter = Interpreter::new();
-
-    // Run the interpreter on the AST to execute the source code
     interpreter.run(program);
 }

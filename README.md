@@ -1,8 +1,32 @@
-# FinnLang — Minimal Typed Scripting Language
-** I got bored and made this **
-FinnLang is a simple, statically typed scripting language designed for learning interpreters and compiler basics. It supports variable declarations, expressions, control flow, and printing.
+# FinnLang 🐕
+*Yes, I named this after my dog*<br>
 
-## Language Features
+FinnLang is a simple, statically typed scripting language designed for learning interpreters and compiler basics. It supports basic variable declarations, expressions, control flow, and printing.
+
+## How to use 🐶
+1. Write your finnlang code in a .finn file, for example:
+
+```finnlang
+let x = 0;
+while (x < 5) {
+    print(x);
+    x = x + 1;
+}
+
+print("Hello world");
+```
+
+Save this as file_name.finn in the ./backend folder.
+
+2. Build and run the interpreter using Cargo:
+```bash
+cargo run -- file_name.finn.
+```
+Replace file_name.finn with the path to your own .finn file if needed
+
+3. Output will be printed to the terminal as your program executes.
+
+## Language Features 🐾
 ### Types
 - int — 64-bit signed integers
 - bool — Boolean values: true or false
@@ -60,3 +84,8 @@ let name2 = "Charlie";
 let flag: bool = true;
 ```
 
+## Features I want to add 🦴
+- A web compiler playground (that's why this is in a ./backend folder)
+- Functions
+- Lambda functions
+- Classes/OOP support (Maybe)

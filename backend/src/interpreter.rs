@@ -1,7 +1,10 @@
+// Import the standard HashMap type for tracking variable bindings
 use std::collections::HashMap;
 
+// Import AST node definitions for expressions and statements
 use crate::ast::{Expr, Stmt};
 
+// Define the possible runtime values that the interpreter can handle
 #[derive(Debug, Clone, PartialEq)]
 pub enum Value {
     Int(i64),
@@ -10,6 +13,7 @@ pub enum Value {
     Double(f64),
 }
 
+// Implement how each value variant should be displayed as a string
 use std::fmt;
 
 impl fmt::Display for Value {
@@ -23,34 +27,43 @@ impl fmt::Display for Value {
     }
 }
 
+// Define the interpreter struct, which holds the environment for variable storage
 pub struct Interpreter {
-    env: HashMap<String, Value>, // for now, only store int variables
+    // Environment mapping variable names to their current values
+    env: HashMap<String, Value>,
 }
 
 impl Interpreter {
+    // Create a new interpreter with an empty environment
     pub fn new() -> Self {
         Interpreter {
             env: HashMap::new(),
         }
     }
 
+    // Execute a program (a vector of statements) in order
     pub fn run(&mut self, program: Vec<Stmt>) {
         for stmt in program {
             self.execute(stmt);
         }
     }
 
+    // Execute a single statement
     fn execute(&mut self, stmt: Stmt) {
         match stmt {
+            // Handle variable declaration and initialization
             Stmt::Let(_var_type_opt, name, expr) => {
                 let value = self.eval(expr);
                 self.env.insert(name, value);
             }
 
+            // Print a value to stdout
             Stmt::Print(expr) => {
                 let value = self.eval(expr);
                 println!("{}", value);
             }
+
+            // Execute a while-loop with a boolean condition
             Stmt::While(cond, body) => {
                 while let Value::Bool(true) = self.eval(cond.clone()) {
                     for stmt in &body {
@@ -58,6 +71,8 @@ impl Interpreter {
                     }
                 }
             }
+
+            // Handle reassignment to existing variables
             Stmt::Assign(name, expr) => {
                 let value = self.eval(expr);
                 if self.env.contains_key(&name) {
@@ -69,17 +84,23 @@ impl Interpreter {
         }
     }
 
+    // Evaluate an expression and return its runtime value
     fn eval(&self, expr: Expr) -> Value {
         match expr {
+            // Literal values
             Expr::Number(n) => Value::Int(n),
             Expr::Bool(b) => Value::Bool(b),
             Expr::StrLiteral(s) => Value::Str(s),
             Expr::Double(f) => Value::Double(f),
+
+            // Lookup a variable’s value in the environment
             Expr::Var(name) => self
                 .env
                 .get(&name)
                 .cloned()
                 .unwrap_or_else(|| panic!("Undefined variable: {}", name)),
+
+            // Arithmetic and string addition
             Expr::Add(left, right) => {
                 let left_val = self.eval(*left);
                 let right_val = self.eval(*right);
@@ -89,10 +110,11 @@ impl Interpreter {
                     (Value::Str(l), Value::Str(r)) => Value::Str(l + &r),
                     (Value::Str(l), v) => Value::Str(l + &v.to_string()),
                     (v, Value::Str(r)) => Value::Str(v.to_string() + &r),
-                    // optionally add int + double conversions here
                     _ => panic!("Unsupported addition types"),
                 }
             }
+
+            // Unary negation
             Expr::Neg(expr) => {
                 let val = self.eval(*expr);
                 match val {
@@ -101,16 +123,22 @@ impl Interpreter {
                     _ => panic!("Unsupported negation type"),
                 }
             }
+
+            // Equality check
             Expr::Eq(left, right) => {
                 let l = self.eval(*left);
                 let r = self.eval(*right);
                 Value::Bool(l == r)
             }
+
+            // Inequality check
             Expr::Neq(left, right) => {
                 let l = self.eval(*left);
                 let r = self.eval(*right);
                 Value::Bool(l != r)
             }
+
+            // Logical AND (short-circuiting)
             Expr::And(left, right) => {
                 if let Value::Bool(l) = self.eval(*left) {
                     if !l {
@@ -125,6 +153,8 @@ impl Interpreter {
                     panic!("Expected boolean in And");
                 }
             }
+
+            // Logical OR (short-circuiting)
             Expr::Or(left, right) => {
                 if let Value::Bool(l) = self.eval(*left) {
                     if l {
@@ -139,6 +169,8 @@ impl Interpreter {
                     panic!("Expected boolean in Or");
                 }
             }
+
+            // Logical NOT
             Expr::Not(expr) => {
                 if let Value::Bool(b) = self.eval(*expr) {
                     Value::Bool(!b)
@@ -146,6 +178,8 @@ impl Interpreter {
                     panic!("Expected boolean in Not");
                 }
             }
+
+            // Subtraction
             Expr::Sub(left, right) => {
                 let left_val = self.eval(*left);
                 let right_val = self.eval(*right);
@@ -156,6 +190,7 @@ impl Interpreter {
                 }
             }
 
+            // Multiplication
             Expr::Mul(left, right) => {
                 let left_val = self.eval(*left);
                 let right_val = self.eval(*right);
@@ -166,6 +201,7 @@ impl Interpreter {
                 }
             }
 
+            // Division with divide-by-zero checks
             Expr::Div(left, right) => {
                 let left_val = self.eval(*left);
                 let right_val = self.eval(*right);
@@ -186,6 +222,7 @@ impl Interpreter {
                 }
             }
 
+            // Modulo operator with zero-check
             Expr::Mod(left, right) => {
                 let left_val = self.eval(*left);
                 let right_val = self.eval(*right);
@@ -200,6 +237,7 @@ impl Interpreter {
                 }
             }
 
+            // Comparison: less than
             Expr::LessThan(left, right) => {
                 let l = self.eval(*left);
                 let r = self.eval(*right);
@@ -209,6 +247,8 @@ impl Interpreter {
                     _ => panic!("Unsupported types for LessThan comparison"),
                 }
             }
+
+            // Comparison: greater than
             Expr::GreaterThan(left, right) => {
                 let l = self.eval(*left);
                 let r = self.eval(*right);
@@ -218,6 +258,8 @@ impl Interpreter {
                     _ => panic!("Unsupported types for GreaterThan comparison"),
                 }
             }
+
+            // Comparison: less than or equal to
             Expr::LessEqual(left, right) => {
                 let l = self.eval(*left);
                 let r = self.eval(*right);
@@ -227,6 +269,8 @@ impl Interpreter {
                     _ => panic!("Unsupported types for LessEqual comparison"),
                 }
             }
+
+            // Comparison: greater than or equal to
             Expr::GreaterEqual(left, right) => {
                 let l = self.eval(*left);
                 let r = self.eval(*right);

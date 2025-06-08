@@ -1,18 +1,23 @@
-// Add tokens for types and keywords
 #[derive(Debug, Clone, PartialEq)]
+// Define the full set of token types that the language recognizes
 pub enum Token {
+    // Keywords and types
     Let,
     Int,
     Bool,
     StringType,
-    DoubleType, // used for type annotations
-    Double(f64),
+    DoubleType,
     While,
     Print,
-    Ident(String),
+
+    // Literals
     Number(i64),
+    Double(f64),
     BoolLiteral(bool),
     StrLiteral(String),
+    Ident(String),
+
+    // Operators
     Plus,
     Minus,
     Star,
@@ -28,22 +33,30 @@ pub enum Token {
     Neq,
     Not,
     Assign,
+
+    // Punctuation
     Colon,
     Semicolon,
     LParen,
     RParen,
     LBrace,
     RBrace,
+
+    // Special tokens
     EOF,
     Unknown(char),
 }
 
+// The lexer takes source code and turns it into a stream of tokens
 pub struct Lexer {
+    // All characters of the input source
     input: Vec<char>,
+    // Current position in the input
     position: usize,
 }
 
 impl Lexer {
+    // Create a new lexer instance from a source string
     pub fn new(input: &str) -> Self {
         Lexer {
             input: input.chars().collect(),
@@ -51,16 +64,19 @@ impl Lexer {
         }
     }
 
+    // Peek at the current character without consuming it
     fn peek(&self) -> Option<char> {
         self.input.get(self.position).copied()
     }
 
+    // Advance the position and return the current character
     fn advance(&mut self) -> Option<char> {
         let ch = self.peek();
         self.position += 1;
         ch
     }
 
+    // Skip any whitespace characters (space, tab, newline)
     fn skip_whitespace(&mut self) {
         while let Some(c) = self.peek() {
             if c.is_whitespace() {
@@ -71,12 +87,14 @@ impl Lexer {
         }
     }
 
+    // Get the next token from the source input
     pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
 
         let ch = self.advance();
 
         match ch {
+            // Handle '=' or '=='
             Some('=') => {
                 if self.peek() == Some('=') {
                     self.advance();
@@ -85,6 +103,8 @@ impl Lexer {
                     Token::Assign
                 }
             }
+
+            // Basic operators and symbols
             Some('+') => Token::Plus,
             Some('-') => Token::Minus,
             Some('*') => Token::Star,
@@ -96,11 +116,13 @@ impl Lexer {
             Some('{') => Token::LBrace,
             Some('}') => Token::RBrace,
             Some(':') => Token::Colon,
+
+            // Handle string literals
             Some('"') => {
                 let mut s = String::new();
                 while let Some(next) = self.peek() {
                     if next == '"' {
-                        self.advance(); // consume closing quote
+                        self.advance(); // Consume closing quote
                         break;
                     } else {
                         s.push(self.advance().unwrap());
@@ -108,6 +130,8 @@ impl Lexer {
                 }
                 Token::StrLiteral(s)
             }
+
+            // Handle number and floating point literals
             Some(c) if c.is_ascii_digit() => {
                 let mut num = c.to_string();
                 let mut is_float = false;
@@ -130,6 +154,7 @@ impl Lexer {
                 }
             }
 
+            // Handle identifiers and keywords
             Some(c) if c.is_ascii_alphabetic() => {
                 let mut ident = c.to_string();
                 while let Some(next) = self.peek() {
@@ -139,6 +164,8 @@ impl Lexer {
                         break;
                     }
                 }
+
+                // Match keywords and return appropriate token
                 match ident.as_str() {
                     "let" => Token::Let,
                     "print" => Token::Print,
@@ -152,6 +179,8 @@ impl Lexer {
                     _ => Token::Ident(ident),
                 }
             }
+
+            // Handle relational operators
             Some('<') => {
                 if self.peek() == Some('=') {
                     self.advance();
@@ -160,6 +189,7 @@ impl Lexer {
                     Token::LessThan
                 }
             }
+
             Some('>') => {
                 if self.peek() == Some('=') {
                     self.advance();
@@ -168,7 +198,11 @@ impl Lexer {
                     Token::GreaterThan
                 }
             }
+
+            // End of input
             None => Token::EOF,
+
+            // Unrecognized character
             Some(other) => Token::Unknown(other),
         }
     }
