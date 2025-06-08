@@ -42,37 +42,50 @@ impl Interpreter {
     }
 
     // Execute a program (a vector of statements) in order
-    pub fn run(&mut self, program: Vec<Stmt>) {
+    pub fn run(&mut self, program: Vec<Stmt>) -> String {
+        let mut output = String::new();
+
         for stmt in program {
-            self.execute(stmt);
+            if let Some(result) = self.execute(stmt) {
+                output.push_str(&result);
+                output.push('\n');
+            }
         }
+
+        output.trim_end().to_string() // remove trailing newline
     }
 
     // Execute a single statement
-    fn execute(&mut self, stmt: Stmt) {
+    fn execute(&mut self, stmt: Stmt) -> Option<String> {
         match stmt {
-            // Handle variable declaration and initialization
             Stmt::Let(_var_type_opt, name, expr) => {
                 let value = self.eval(expr);
                 self.env.insert(name, value);
+                None
             }
 
-            // Print a value to stdout
             Stmt::Print(expr) => {
                 let value = self.eval(expr);
-                println!("{}", value);
+                Some(value.to_string()) // Return instead of printing
             }
 
-            // Execute a while-loop with a boolean condition
             Stmt::While(cond, body) => {
+                let mut output = String::new();
                 while let Value::Bool(true) = self.eval(cond.clone()) {
                     for stmt in &body {
-                        self.execute(stmt.clone());
+                        if let Some(out) = self.execute(stmt.clone()) {
+                            output.push_str(&out);
+                            output.push('\n');
+                        }
                     }
+                }
+                if output.is_empty() {
+                    None
+                } else {
+                    Some(output)
                 }
             }
 
-            // Handle reassignment to existing variables
             Stmt::Assign(name, expr) => {
                 let value = self.eval(expr);
                 if self.env.contains_key(&name) {
@@ -80,6 +93,7 @@ impl Interpreter {
                 } else {
                     panic!("Cannot assign to undeclared variable: {}", name);
                 }
+                None
             }
         }
     }

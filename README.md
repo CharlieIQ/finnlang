@@ -4,7 +4,7 @@
 FinnLang is a simple, statically typed scripting language designed for learning interpreters and compiler basics. It supports basic variable declarations, expressions, control flow, and printing.
 
 ## How to use 🐶
-1. Write your finnlang code in a .finn file, for example:
+1. Write your finnlang code in a `.finn` file, for example:
 
 ```finnlang
 let x = 0;
@@ -16,13 +16,13 @@ while (x < 5) {
 print("Hello world");
 ```
 
-Save this as file_name.finn in the ./backend folder.
+Save this as `file_name.finn` in the `./backend` folder.
 
 2. Build and run the interpreter using Cargo:
 ```bash
-cargo run -- file_name.finn.
+cargo run -- file_name.finn
 ```
-Replace file_name.finn with the path to your own .finn file if needed
+Replace `file_name.finn` with the path to your own `.finn` file if needed. (Or you can use your own file path)
 
 3. Output will be printed to the terminal as your program executes.
 
