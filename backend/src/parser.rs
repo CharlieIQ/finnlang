@@ -1,0 +1,346 @@
+use crate::ast::{Expr, Stmt, Type};
+use crate::lexer::{Lexer, Token};
+
+pub struct Parser {
+    lexer: Lexer,
+    current: Token,
+}
+
+impl Parser {
+    pub fn new(mut lexer: Lexer) -> Self {
+        let current = lexer.next_token();
+        Parser { lexer, current }
+    }
+
+    fn advance(&mut self) {
+        self.current = self.lexer.next_token();
+    }
+
+    pub fn parse(&mut self) -> Vec<Stmt> {
+        let mut stmts = Vec::new();
+        while self.current != Token::EOF {
+            if let Some(stmt) = self.parse_stmt() {
+                stmts.push(stmt);
+            } else {
+                // Error or unexpected token, skip it
+                self.advance();
+            }
+        }
+        stmts
+    }
+
+    fn parse_stmt(&mut self) -> Option<Stmt> {
+        match &self.current {
+            Token::Let => self.parse_let_stmt(),
+            Token::Print => self.parse_print_stmt(),
+            Token::While => self.parse_while_stmt(),
+            Token::Ident(_) => self.parse_assign_stmt(),
+            _ => None,
+        }
+    }
+
+    fn parse_let_stmt(&mut self) -> Option<Stmt> {
+        self.advance(); // consume 'let'
+
+        // Expect identifier
+        let var_name = if let Token::Ident(name) = &self.current {
+            name.clone()
+        } else {
+            return None;
+        };
+        self.advance(); // consume identifier
+
+        // Optional colon + type
+        let var_type = if self.current == Token::Colon {
+            self.advance(); // consume ':'
+            self.parse_type()?
+        } else {
+            // Default type, e.g. Int or a placeholder
+            Type::Int
+        };
+
+        // Expect '='
+        if self.current != Token::Assign {
+            return None;
+        }
+        self.advance(); // consume '='
+
+        // Parse expression
+        let expr = self.parse_expr()?;
+
+        // Expect semicolon
+        if self.current != Token::Semicolon {
+            return None;
+        }
+        self.advance(); // consume ';'
+
+        Some(Stmt::Let(var_type, var_name, expr))
+    }
+
+    fn parse_type(&mut self) -> Option<Type> {
+        match &self.current {
+            Token::Int => {
+                self.advance();
+                Some(Type::Int)
+            }
+            Token::Bool => {
+                self.advance();
+                Some(Type::Bool)
+            }
+            Token::StringType => {
+                self.advance();
+                Some(Type::String)
+            }
+            Token::DoubleType => {
+                self.advance();
+                Some(Type::Double)
+            }
+            _ => None,
+        }
+    }
+
+    fn parse_print_stmt(&mut self) -> Option<Stmt> {
+        // consume 'print'
+        self.advance();
+
+        if self.current != Token::LParen {
+            return None;
+        }
+        // consume '('
+        self.advance();
+
+        let expr = self.parse_expr()?;
+
+        if self.current != Token::RParen {
+            return None;
+        }
+        // consume ')'
+        self.advance();
+
+        if self.current != Token::Semicolon {
+            return None;
+        }
+        // consume ';'
+        self.advance();
+
+        Some(Stmt::Print(expr))
+    }
+
+    fn parse_while_stmt(&mut self) -> Option<Stmt> {
+        // consume 'while'
+        self.advance();
+
+        if self.current != Token::LParen {
+            return None;
+        }
+        // consume '('
+        self.advance();
+
+        let condition = self.parse_expr()?;
+
+        if self.current != Token::RParen {
+            return None;
+        }
+        // consume ')'
+        self.advance();
+
+        if self.current != Token::LBrace {
+            return None;
+        }
+        // consume '{'
+        self.advance();
+
+        let mut body = Vec::new();
+        while self.current != Token::RBrace && self.current != Token::EOF {
+            if let Some(stmt) = self.parse_stmt() {
+                body.push(stmt);
+            } else {
+                // skip unexpected tokens inside loop
+                self.advance();
+            }
+        }
+
+        if self.current != Token::RBrace {
+            return None;
+        }
+        // consume '}'
+        self.advance();
+
+        Some(Stmt::While(condition, body))
+    }
+
+    fn parse_expr(&mut self) -> Option<Expr> {
+        self.parse_or_expr()
+    }
+
+    fn parse_or_expr(&mut self) -> Option<Expr> {
+        let mut left = self.parse_and_expr()?;
+        while self.current == Token::Or {
+            self.advance();
+            let right = self.parse_and_expr()?;
+            left = Expr::Or(Box::new(left), Box::new(right));
+        }
+        Some(left)
+    }
+
+    fn parse_and_expr(&mut self) -> Option<Expr> {
+        let mut left = self.parse_equality_expr()?;
+        while self.current == Token::And {
+            self.advance();
+            let right = self.parse_equality_expr()?;
+            left = Expr::And(Box::new(left), Box::new(right));
+        }
+        Some(left)
+    }
+
+    fn parse_equality_expr(&mut self) -> Option<Expr> {
+        let mut left = self.parse_rel_expr()?;
+        while self.current == Token::Eq || self.current == Token::Neq {
+            let op = self.current.clone();
+            self.advance();
+            let right = self.parse_rel_expr()?;
+            left = match op {
+                Token::Eq => Expr::Eq(Box::new(left), Box::new(right)),
+                Token::Neq => Expr::Neq(Box::new(left), Box::new(right)),
+                _ => unreachable!(),
+            };
+        }
+        Some(left)
+    }
+
+    fn parse_rel_expr(&mut self) -> Option<Expr> {
+        let mut left = self.parse_add_expr()?;
+
+        while self.current == Token::LessThan
+            || self.current == Token::GreaterThan
+            || self.current == Token::LessEqual
+            || self.current == Token::GreaterEqual
+        {
+            let op = self.current.clone();
+            self.advance();
+
+            let right = self.parse_add_expr()?;
+
+            left = match op {
+                Token::LessThan => Expr::LessThan(Box::new(left), Box::new(right)),
+                Token::GreaterThan => Expr::GreaterThan(Box::new(left), Box::new(right)),
+                Token::LessEqual => Expr::LessEqual(Box::new(left), Box::new(right)),
+                Token::GreaterEqual => Expr::GreaterEqual(Box::new(left), Box::new(right)),
+                _ => unreachable!(),
+            };
+        }
+
+        Some(left)
+    }
+
+    fn parse_add_expr(&mut self) -> Option<Expr> {
+        let mut left = self.parse_mul_expr()?;
+        while self.current == Token::Plus || self.current == Token::Minus {
+            let op = self.current.clone();
+            self.advance();
+            let right = self.parse_mul_expr()?;
+            left = match op {
+                Token::Plus => Expr::Add(Box::new(left), Box::new(right)),
+                Token::Minus => Expr::Sub(Box::new(left), Box::new(right)),
+                _ => unreachable!(),
+            };
+        }
+        Some(left)
+    }
+
+    fn parse_mul_expr(&mut self) -> Option<Expr> {
+        let mut left = self.parse_unary_expr()?;
+        while self.current == Token::Star
+            || self.current == Token::Slash
+            || self.current == Token::Percent
+        {
+            let op = self.current.clone();
+            self.advance();
+            let right = self.parse_unary_expr()?;
+            left = match op {
+                Token::Star => Expr::Mul(Box::new(left), Box::new(right)),
+                Token::Slash => Expr::Div(Box::new(left), Box::new(right)),
+                Token::Percent => Expr::Mod(Box::new(left), Box::new(right)),
+                _ => unreachable!(),
+            };
+        }
+        Some(left)
+    }
+
+    fn parse_unary_expr(&mut self) -> Option<Expr> {
+        if self.current == Token::Not {
+            self.advance();
+            let expr = self.parse_unary_expr()?;
+            Some(Expr::Not(Box::new(expr)))
+        } else if self.current == Token::Minus {
+            self.advance();
+            let expr = self.parse_unary_expr()?;
+            Some(Expr::Neg(Box::new(expr))) // You need to add Expr::Neg variant
+        } else {
+            self.parse_term()
+        }
+    }
+
+    fn parse_term(&mut self) -> Option<Expr> {
+        match &self.current {
+            Token::Number(n) => {
+                let expr = Expr::Number(*n);
+                self.advance();
+                Some(expr)
+            }
+            Token::Double(f) => {
+                let expr = Expr::Double(*f);
+                self.advance();
+                Some(expr)
+            }
+            Token::BoolLiteral(b) => {
+                let expr = Expr::Bool(*b);
+                self.advance();
+                Some(expr)
+            }
+            Token::StrLiteral(s) => {
+                let expr = Expr::StrLiteral(s.clone());
+                self.advance();
+                Some(expr)
+            }
+            Token::Ident(name) => {
+                let expr = Expr::Var(name.clone());
+                self.advance();
+                Some(expr)
+            }
+            Token::LParen => {
+                self.advance();
+                let expr = self.parse_expr()?;
+                if self.current != Token::RParen {
+                    return None;
+                }
+                self.advance();
+                Some(expr)
+            }
+            _ => None,
+        }
+    }
+    fn parse_assign_stmt(&mut self) -> Option<Stmt> {
+        // Assume current is Token::Ident
+        let name = if let Token::Ident(n) = &self.current {
+            n.clone()
+        } else {
+            return None;
+        };
+        self.advance(); // consume identifier
+
+        if self.current != Token::Assign {
+            return None;
+        }
+        self.advance(); // consume '='
+
+        let expr = self.parse_expr()?;
+
+        if self.current != Token::Semicolon {
+            return None;
+        }
+        self.advance(); // consume ';'
+
+        Some(Stmt::Assign(name, expr))
+    }
+}
