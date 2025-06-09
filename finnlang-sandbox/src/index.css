@@ -13,8 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* compiler.css */
-
 body {
   background-color: #1e1e2f;
   color: #dcdcdc;
@@ -70,14 +68,13 @@ textarea {
   letter-spacing: 0.5px;
   /* Slightly spaced out letters for clarity */
   line-height: 1.5;
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 textarea:focus {
   border-color: #21a1f1;
   box-shadow: 0 0 25px #21a1f1bb;
 }
-
 
 button {
   margin-top: 1rem;
@@ -90,8 +87,6 @@ button {
   cursor: pointer;
   color: #1e1e2f;
   transition: background-color 0.3s ease;
-  display: block;
-  width: 100%;
 }
 
 button:hover {
@@ -110,6 +105,56 @@ pre {
   font-family: 'Fira Code', monospace, monospace;
   font-size: 0.95rem;
   box-shadow: inset 0 0 5px #000000aa;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(18, 18, 43, 0.85);
+  /* Match textarea background, translucent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2d2d44;
+  color: #dcdcdc;
+  padding: 2rem;
+  max-width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+  position: relative;
+  font-size: 0.95rem;
+  font-family: 'Fira Code', monospace;
+  line-height: 1.5;
+}
+
+.modal-content h2,
+.modal-content h3 {
+  color: #61dafb;
+  margin-top: 1rem;
+}
+
+.modal-content code,
+.modal-content pre {
+  background: #12122b;
+  color: #e0e0ff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  display: block;
+  white-space: pre-wrap;
+  margin: 0.5rem 0;
+}
+
+.modal-content ul {
+  margin-left: 1rem;
 }
 
 

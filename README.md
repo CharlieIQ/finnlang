@@ -1,9 +1,45 @@
 # FinnLang 🐕
 *Yes, I named this after my dog*<br>
 
-FinnLang is a simple, statically typed scripting language designed for learning interpreters and compiler basics. It supports basic variable declarations, expressions, control flow, and printing.
+FinnLang is a simple, scripting language designed for learning interpreters and compiler basics. It supports basic variable declarations, expressions, control flow, and woofing.
 
-## How to use 🐶
+## Running the web sandbox locally 🐶
+>I made a web sandbox where you can play with FinnLang.<br>
+Here are the installation steps, enjoy!
+
+*Note: Make sure you have the latest versions of **Cargo**, and **npm***
+
+1. Clone the Repository
+```bash
+git clone https://github.com/yourusername/finnlang.git
+cd finnlang
+```
+1. Start the Backend Server
+Navigate to the backend directory and run the Rust server:
+```bash
+cd backend
+cargo run --bin server
+```
+This'll start the FinnLang backend on localhost
+
+1. Set Up and Run the Frontend
+In a new terminal window, go to the frontend sandbox directory:
+
+```bash
+cd ../finnland-sandbox
+```
+Install the dependencies:
+
+```bash
+npm install
+```
+Then, start the development server:
+```bash
+npm run dev
+```
+This should open the web sandbox in your browser at http://localhost:5173 (or whatever Vite uses by default).
+
+## How to use in a CLI 🐶
 1. Write your finnlang code in a `.finn` file, for example:
 
 ```finnlang

@@ -1,0 +1,41 @@
+.close-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #61dafb;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #21a1f1;
+}
+
+.button-row {
+  width: 90%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Adjust individual button styling */
+.button-row button {
+  width: auto;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  font-weight: 500;
+  background: #61dafb;
+  color: #1e1e2f;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-row button:hover {
+  background-color: #21a1f1;
+}
