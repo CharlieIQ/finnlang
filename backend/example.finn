@@ -3,7 +3,7 @@ let name = "user!";
 
 let fullgreeting = greeting + name;
 
-print(fullgreeting);
+woof(fullgreeting);
 
 let x = 0;
 while (x < 5) {
@@ -11,4 +11,4 @@ while (x < 5) {
     x = x + 1;
 }
 
-print("Hello world");
+woof("Hello world");

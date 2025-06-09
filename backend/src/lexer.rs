@@ -168,7 +168,7 @@ impl Lexer {
                 // Match keywords and return appropriate token
                 match ident.as_str() {
                     "let" => Token::Let,
-                    "print" => Token::Print,
+                    "woof" => Token::Print,
                     "int" => Token::Int,
                     "bool" => Token::Bool,
                     "string" => Token::StringType,

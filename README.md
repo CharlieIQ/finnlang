@@ -9,11 +9,11 @@ FinnLang is a simple, statically typed scripting language designed for learning 
 ```finnlang
 let x = 0;
 while (x < 5) {
-    print(x);
+    woof(x);
     x = x + 1;
 }
 
-print("Hello world");
+woof("Hello world");
 ```
 
 Save this as `file_name.finn` in the `./backend` folder.
@@ -46,12 +46,12 @@ let c = (a == 8);
 ```
 
 ### Printing
-Use print to output values:
+Use `woof` to output values:
 
 ```finnlang
-print("Hello, world!");
+woof("Hello, world!");
 let a = "HI";
-print(a);
+woof(a);
 ```
 
 ### Control Flow: While Loops
@@ -60,7 +60,7 @@ Repeat code while a condition is true:
 ```finnlang
 let x = 0;
 while (x < 5) {
-    print(x);
+    woof(x);
     x = x + 1;
 }
 ```
@@ -69,9 +69,9 @@ while (x < 5) {
 Assign new values to existing variables:
 ```finnlang
 let count = 10;
-print(count);
+woof(count);
 count = count + 1;
-print(count);
+woof(count);
 ```
 
 ### Variable Declaration
