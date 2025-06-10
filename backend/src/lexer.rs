@@ -108,6 +108,26 @@ impl Lexer {
                 }
             }
 
+            // Logical AND &&
+            Some('&') => {
+                if self.peek() == Some('&') {
+                    self.advance();
+                    Token::And
+                } else {
+                    Token::Unknown('&')
+                }
+            }
+
+            // Logical OR ||
+            Some('|') => {
+                if self.peek() == Some('|') {
+                    self.advance();
+                    Token::Or
+                } else {
+                    Token::Unknown('|')
+                }
+            }
+
             // Basic operators and symbols
             Some('+') => Token::Plus,
             Some('-') => Token::Minus,
@@ -181,6 +201,8 @@ impl Lexer {
                     "if" => Token::If,
                     "elif" => Token::Elif,
                     "else" => Token::Else,
+                    "and" => Token::And,
+                    "or" => Token::Or,
                     "true" => Token::BoolLiteral(true),
                     "false" => Token::BoolLiteral(false),
                     _ => Token::Ident(ident),

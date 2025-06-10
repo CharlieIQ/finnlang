@@ -1,0 +1,19 @@
+let n = 50;
+let i = 0;
+
+while (i < n) {
+  if ((i % 5 == 0) && (i % 3 == 0)) {
+    woof("FizzBuzz");
+  }
+  elif ((i % 5 == 0)) {
+    woof("Fizz");
+  }
+  elif ((i % 3 == 0)) {
+    woof("Buzz");
+  }
+  else {
+    woof(i);
+  }
+
+  i = i + 1;
+}

@@ -89,8 +89,20 @@ woof("Hello, world!");
 let a = "HI";
 woof(a);
 ```
+### If, Elif, Else Statements
+Use `if`, `elif`, and `else` to declate conditionals. `elif` and `else` are entirely optional.
 
-### Control Flow: While Loops
+```finnlang
+if (x < 0){
+    woof("x is less than 0");
+}elif (x == 5){
+    woof("x is equal to 5");
+}else{
+    woof("x is something else");
+}
+```
+
+### While Loops
 Repeat code while a condition is true:
 
 ```finnlang

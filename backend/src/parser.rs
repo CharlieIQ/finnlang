@@ -8,6 +8,7 @@ pub struct Parser {
     current: Token,
 }
 
+// This is the FinnLang parser
 impl Parser {
     pub fn new(mut lexer: Lexer) -> Self {
         let current = lexer.next_token();
@@ -189,28 +190,23 @@ impl Parser {
     }
 
     fn parse_if_stmt(&mut self) -> Option<Stmt> {
-        println!("Trying to parse an if statement...");
         // consume 'if'
         self.advance();
 
         if self.current != Token::LParen {
-            println!("Expected '(', found {:?}", self.current);
             return None;
         }
         self.advance();
 
         let condition = self.parse_expr()?;
-        println!("Parsed condition: {:?}", condition);
 
         if self.current != Token::RParen {
-            println!("Expected ')', found {:?}", self.current);
             return None;
         }
 
         self.advance();
 
         if self.current != Token::LBrace {
-            println!("Expected '{{', found {:?}", self.current);
             return None;
         }
         self.advance();
@@ -220,7 +216,6 @@ impl Parser {
             if let Some(stmt) = self.parse_stmt() {
                 if_block.push(stmt);
             } else {
-                println!("Skipping invalid stmt in if block");
                 self.advance();
             }
         }
@@ -228,7 +223,6 @@ impl Parser {
             return None;
         }
         self.advance();
-        println!("Parsed if block with {} statements", if_block.len());
         // Parse zero or more elif branches
         let mut elif_branches = Vec::new();
         while self.current == Token::Elif {

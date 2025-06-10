@@ -2,10 +2,15 @@ import { useState } from 'react';
 import './styles/buttons.css';
 
 function App() {
+  // State to hold code
   const [code, setCode] = useState("");
+  // State to store output
   const [output, setOutput] = useState("");
+  // State to toggle docs popup
   const [showDocs, setShowDocs] = useState(false);
-
+  /**
+   * This will use the backend to run the code and return an output
+   */
   const runCode = async () => {
     const res = await fetch('http://localhost:3000/run', {
       method: 'POST',
@@ -58,13 +63,23 @@ let c = (a == 8);`}</pre>
             <pre>{`woof("Hello, world!");
 let a = "HI";
 woof(a);`}</pre>
-
+            <h3>If statements</h3>
+            <pre>
+              {`if (x < 0){
+    woof("x is less than 0");
+}elif (x == 5){
+    woof("x is equal to 5");
+}else{
+    woof("x is something else");
+}
+              `}
+            </pre>
             <h3>While Loops</h3>
             <pre>{`let x = 0;
-while (x < 5) {
-    woof(x);
-    x = x + 1;
-}`}</pre>
+        while (x < 5) {
+            woof(x);
+            x = x + 1;
+        }`}</pre>
 
             <h3>Assignment</h3>
             <pre>{`let count = 10;
@@ -77,6 +92,26 @@ woof(count);`}</pre>
 let name: string = "Charlie";
 let name2 = "Charlie";
 let flag: bool = true;`}</pre>
+            <h3>Example: FizzBuzz</h3>
+            <pre>{`let n = 50;
+let i = 0;
+
+while (i < n) {
+  if ((i % 5 == 0) && (i % 3 == 0)) {
+    woof("FizzBuzz");
+  }
+  elif ((i % 5 == 0)) {
+    woof("Fizz");
+  }
+  elif ((i % 3 == 0)) {
+    woof("Buzz");
+  }
+  else {
+    woof(i);
+  }
+
+  i = i + 1;
+}`}</pre>
           </div>
         </div>
       )}
