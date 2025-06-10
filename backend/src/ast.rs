@@ -60,7 +60,10 @@ pub enum Expr {
     Mul(Box<Expr>, Box<Expr>),
     Div(Box<Expr>, Box<Expr>),
     Mod(Box<Expr>, Box<Expr>),
-
+    // Arrays
+    ArrayLiteral(Vec<Expr>),
+    Index(Box<Expr>, Box<Expr>),
+    AssignIndex(Box<Expr>, Box<Expr>, Box<Expr>), // arr[index] = value
     // Comparison operations (equality, inequality, less than, greater than, etc.)
     Eq(Box<Expr>, Box<Expr>),
     LessThan(Box<Expr>, Box<Expr>),

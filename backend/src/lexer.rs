@@ -20,7 +20,10 @@ pub enum Token {
     BoolLiteral(bool),
     StrLiteral(String),
     Ident(String),
-
+    // For arrays
+    LBracket,
+    RBracket,
+    Comma,
     // Operators
     Plus,
     Minus,
@@ -139,6 +142,10 @@ impl Lexer {
             Some(')') => Token::RParen,
             Some('{') => Token::LBrace,
             Some('}') => Token::RBrace,
+            // for arrays
+            Some('[') => Token::LBracket,
+            Some(']') => Token::RBracket,
+            Some(',') => Token::Comma,
             Some(':') => Token::Colon,
 
             // Handle string literals

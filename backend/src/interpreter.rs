@@ -12,6 +12,7 @@ pub enum Value {
     Bool(bool),
     Str(String),
     Double(f64),
+    Array(Vec<Value>),
 }
 
 // Implement how each value variant should be displayed as a string
@@ -24,6 +25,10 @@ impl fmt::Display for Value {
             Value::Bool(b) => write!(f, "{}", b),
             Value::Str(s) => write!(f, "{}", s),
             Value::Double(d) => write!(f, "{}", d),
+            Value::Array(arr) => {
+                let elements: Vec<String> = arr.iter().map(|v| v.to_string()).collect();
+                write!(f, "[{}]", elements.join(", "))
+            }
         }
     }
 }
@@ -162,6 +167,45 @@ impl Interpreter {
                 .get(&name)
                 .cloned()
                 .unwrap_or_else(|| panic!("Undefined variable: {}", name)),
+
+            Expr::ArrayLiteral(elements) => {
+                let mut result = Vec::new();
+                for e in elements {
+                    result.push(self.eval(e));
+                }
+                Value::Array(result)
+            }
+
+            Expr::Index(array_expr, index_expr) => {
+                let array = self.eval(*array_expr);
+                let index = self.eval(*index_expr);
+                match (array, index) {
+                    (Value::Array(arr), Value::Int(i)) => arr
+                        .get(i as usize)
+                        .cloned()
+                        .unwrap_or(Value::Str("Index out of bounds".into())),
+                    _ => panic!("Invalid indexing operation"),
+                }
+            }
+
+            Expr::AssignIndex(array_expr, index_expr, value_expr) => {
+                let array_val = self.eval(*array_expr);
+                let index = self.eval(*index_expr);
+                let new_val = self.eval(*value_expr);
+
+                if let (Value::Array(mut arr), Value::Int(i)) = (array_val.clone(), index) {
+                    if (i as usize) < arr.len() {
+                        arr[i as usize] = new_val.clone();
+                        // update environment if needed
+                        // ...
+                        Value::Array(arr)
+                    } else {
+                        panic!("Index out of bounds");
+                    }
+                } else {
+                    panic!("Invalid array assignment");
+                }
+            }
 
             // Arithmetic and string addition
             Expr::Add(left, right) => {

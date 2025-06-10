@@ -76,11 +76,14 @@ woof(a);`}</pre>
             </pre>
             <h3>While Loops</h3>
             <pre>{`let x = 0;
-        while (x < 5) {
-            woof(x);
-            x = x + 1;
-        }`}</pre>
-
+while (x < 5) {
+    woof(x);
+    x = x + 1;
+}`}</pre>
+        <h3>Arrays</h3>
+              <pre>
+                {`let nums = [0, 1, 2, 3, 4, 5];
+let names = ["Alice", "Bob", "Charlie"];`}</pre>
             <h3>Assignment</h3>
             <pre>{`let count = 10;
 woof(count);

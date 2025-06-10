@@ -397,7 +397,7 @@ impl Parser {
     }
     // this is for parsing different terms
     fn parse_term(&mut self) -> Option<Expr> {
-        match &self.current {
+        let term = match &self.current {
             Token::Number(n) => {
                 let expr = Expr::Number(*n);
                 self.advance();
@@ -423,6 +423,26 @@ impl Parser {
                 self.advance();
                 Some(expr)
             }
+            Token::LBracket => {
+                self.advance(); // consume '['
+                let mut elements = Vec::new();
+                if self.current != Token::RBracket {
+                    loop {
+                        let expr = self.parse_expr()?;
+                        elements.push(expr);
+                        if self.current == Token::Comma {
+                            self.advance();
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if self.current != Token::RBracket {
+                    panic!("Expected closing bracket for array literal");
+                }
+                self.advance(); // consume ']'
+                Some(Expr::ArrayLiteral(elements))
+            }
             Token::LParen => {
                 self.advance();
                 let expr = self.parse_expr()?;
@@ -433,7 +453,26 @@ impl Parser {
                 Some(expr)
             }
             _ => None,
+        };
+        let expr = term?;
+        self.parse_postfix(expr)
+    }
+    fn parse_postfix(&mut self, mut expr: Expr) -> Option<Expr> {
+        loop {
+            match &self.current {
+                Token::LBracket => {
+                    self.advance(); // consume '['
+                    let index = self.parse_expr()?;
+                    if self.current != Token::RBracket {
+                        panic!("Expected closing bracket for index");
+                    }
+                    self.advance(); // consume ']'
+                    expr = Expr::Index(Box::new(expr), Box::new(index));
+                }
+                _ => break,
+            }
         }
+        Some(expr)
     }
     // This is for parsing assignment operators
     fn parse_assign_stmt(&mut self) -> Option<Stmt> {

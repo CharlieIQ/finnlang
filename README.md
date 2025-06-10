@@ -113,6 +113,13 @@ while (x < 5) {
 }
 ```
 
+### Arrays
+You can declare arrays of data
+```finnlang
+let nums = [0, 1, 2, 3, 4, 5];
+let names = ["Alice", "Bob", "Charlie"];
+```
+
 ### Assignment
 Assign new values to existing variables:
 ```finnlang
@@ -133,7 +140,6 @@ let flag: bool = true;
 ```
 
 ## Features I want to add 🦴
-- A web compiler playground (that's why this is in a ./backend folder)
 - Functions
 - Lambda functions
 - Classes/OOP support (Maybe)
