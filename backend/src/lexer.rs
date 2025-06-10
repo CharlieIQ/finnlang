@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 #[derive(Debug, Clone, PartialEq)]
 // Define the full set of token types that the language recognizes
 pub enum Token {
@@ -8,6 +9,9 @@ pub enum Token {
     StringType,
     DoubleType,
     While,
+    If,
+    Elif,
+    Else,
     Print,
 
     // Literals
@@ -174,6 +178,9 @@ impl Lexer {
                     "string" => Token::StringType,
                     "double" => Token::DoubleType,
                     "while" => Token::While,
+                    "if" => Token::If,
+                    "elif" => Token::Elif,
+                    "else" => Token::Else,
                     "true" => Token::BoolLiteral(true),
                     "false" => Token::BoolLiteral(false),
                     _ => Token::Ident(ident),

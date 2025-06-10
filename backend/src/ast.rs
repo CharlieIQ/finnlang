@@ -1,5 +1,6 @@
+#![allow(dead_code)]
 // Represents the basic data types supported by the language
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 pub enum Type {
     // Integer 
     Int,    
@@ -25,6 +26,14 @@ pub enum Stmt {
 
     // While loop with a condition expression and a block of statements to execute repeatedly
     While(Expr, Vec<Stmt>),
+
+    // If/Elif/Else statement
+    If(
+        Expr,
+        Vec<Stmt>, 
+        Vec<(Expr, Vec<Stmt>)>, 
+        Option<Vec<Stmt>>,      
+    ),
 }
 
 // Represents expressions that can be evaluated to produce values

@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::ast::{Expr, Stmt, Type};
 use crate::lexer::{Lexer, Token};
 
@@ -34,6 +36,7 @@ impl Parser {
             Token::Let => self.parse_let_stmt(),
             Token::Print => self.parse_print_stmt(),
             Token::While => self.parse_while_stmt(),
+            Token::If => self.parse_if_stmt(),
             Token::Ident(_) => self.parse_assign_stmt(),
             _ => None,
         }
@@ -183,6 +186,106 @@ impl Parser {
         self.advance();
 
         Some(Stmt::While(condition, body))
+    }
+
+    fn parse_if_stmt(&mut self) -> Option<Stmt> {
+        println!("Trying to parse an if statement...");
+        // consume 'if'
+        self.advance();
+
+        if self.current != Token::LParen {
+            println!("Expected '(', found {:?}", self.current);
+            return None;
+        }
+        self.advance();
+
+        let condition = self.parse_expr()?;
+        println!("Parsed condition: {:?}", condition);
+
+        if self.current != Token::RParen {
+            println!("Expected ')', found {:?}", self.current);
+            return None;
+        }
+
+        self.advance();
+
+        if self.current != Token::LBrace {
+            println!("Expected '{{', found {:?}", self.current);
+            return None;
+        }
+        self.advance();
+
+        let mut if_block = Vec::new();
+        while self.current != Token::RBrace && self.current != Token::EOF {
+            if let Some(stmt) = self.parse_stmt() {
+                if_block.push(stmt);
+            } else {
+                println!("Skipping invalid stmt in if block");
+                self.advance();
+            }
+        }
+        if self.current != Token::RBrace {
+            return None;
+        }
+        self.advance();
+        println!("Parsed if block with {} statements", if_block.len());
+        // Parse zero or more elif branches
+        let mut elif_branches = Vec::new();
+        while self.current == Token::Elif {
+            self.advance();
+            if self.current != Token::LParen {
+                return None;
+            }
+            self.advance();
+            let elif_cond = self.parse_expr()?;
+            if self.current != Token::RParen {
+                return None;
+            }
+            self.advance();
+            if self.current != Token::LBrace {
+                return None;
+            }
+            self.advance();
+            let mut elif_block = Vec::new();
+            while self.current != Token::RBrace && self.current != Token::EOF {
+                if let Some(stmt) = self.parse_stmt() {
+                    elif_block.push(stmt);
+                } else {
+                    self.advance();
+                }
+            }
+            if self.current != Token::RBrace {
+                return None;
+            }
+            self.advance();
+            elif_branches.push((elif_cond, elif_block));
+        }
+
+        // Optional else
+        let else_block = if self.current == Token::Else {
+            self.advance();
+            if self.current != Token::LBrace {
+                return None;
+            }
+            self.advance();
+            let mut block = Vec::new();
+            while self.current != Token::RBrace && self.current != Token::EOF {
+                if let Some(stmt) = self.parse_stmt() {
+                    block.push(stmt);
+                } else {
+                    self.advance();
+                }
+            }
+            if self.current != Token::RBrace {
+                return None;
+            }
+            self.advance();
+            Some(block)
+        } else {
+            None
+        };
+
+        Some(Stmt::If(condition, if_block, elif_branches, else_block))
     }
 
     fn parse_expr(&mut self) -> Option<Expr> {
@@ -347,13 +450,13 @@ impl Parser {
             return None;
         };
         // consume identifier
-        self.advance(); 
+        self.advance();
 
         if self.current != Token::Assign {
             return None;
         }
         // consume '='
-        self.advance(); 
+        self.advance();
 
         let expr = self.parse_expr()?;
 
@@ -361,7 +464,7 @@ impl Parser {
             return None;
         }
         // consume ';'
-        self.advance(); 
+        self.advance();
 
         Some(Stmt::Assign(name, expr))
     }

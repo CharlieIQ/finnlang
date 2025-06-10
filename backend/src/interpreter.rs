@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 // Import the standard HashMap type for tracking variable bindings
 use std::collections::HashMap;
 
@@ -83,6 +84,54 @@ impl Interpreter {
                     None
                 } else {
                     Some(output)
+                }
+            }
+
+            Stmt::If(cond, if_block, elifs, else_block) => {
+                if let Value::Bool(true) = self.eval(cond) {
+                    let mut output = String::new();
+                    for stmt in if_block {
+                        if let Some(out) = self.execute(stmt) {
+                            output.push_str(&out);
+                            output.push('\n');
+                        }
+                    }
+                    if output.is_empty() {
+                        None
+                    } else {
+                        Some(output)
+                    }
+                } else {
+                    // Check elif branches
+                    let mut matched = false;
+                    let mut output = String::new();
+                    for (elif_cond, elif_block) in elifs {
+                        if let Value::Bool(true) = self.eval(elif_cond) {
+                            for stmt in elif_block {
+                                if let Some(out) = self.execute(stmt) {
+                                    output.push_str(&out);
+                                    output.push('\n');
+                                }
+                            }
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if !matched {
+                        if let Some(else_block) = else_block {
+                            for stmt in else_block {
+                                if let Some(out) = self.execute(stmt) {
+                                    output.push_str(&out);
+                                    output.push('\n');
+                                }
+                            }
+                        }
+                    }
+                    if output.is_empty() {
+                        None
+                    } else {
+                        Some(output)
+                    }
                 }
             }
 
