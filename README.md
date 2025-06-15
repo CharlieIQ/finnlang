@@ -26,7 +26,7 @@ This'll start the FinnLang backend on localhost
 In a new terminal window, go to the frontend sandbox directory:
 
 ```bash
-cd ../finnland-sandbox
+cd ../finnlang-sandbox
 ```
 Install the dependencies:
 
