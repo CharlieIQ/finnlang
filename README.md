@@ -27,7 +27,7 @@ cd backend
 cargo run --bin server
 ```
 
-This'll start the FinnLang backend on localhost
+This'll start the FinnLang backend on localhost. Default is port 3000, but you can change it in `server.rs`.
 
 1. Set Up and Run the Frontend
 In a new terminal window, go to the frontend sandbox directory:
@@ -123,6 +123,51 @@ if (x < 0){
 }
 ```
 
+### For Loops
+
+Repeat code with initialization, condition, and update:
+
+```finnlang
+for (let i = 0; i < 5; i = i + 1) {
+    woof(i);
+}
+```
+
+### Functions
+
+Define and call custom functions with the `funct` keyword:
+
+```finnlang
+// Function without parameters
+funct sayHello() {
+    woof("Hello, world!");
+}
+
+// Function with parameters
+funct greet(name: string, age: int) {
+    woof("Hello " + name + ", you are " + age + " years old!");
+}
+
+// Call functions
+sayHello();
+greet("Alice", 25);
+```
+
+### Comments
+
+Support for single-line and multi-line comments:
+
+```finnlang
+// This is a single-line comment
+
+/* 
+   This is a multi-line comment
+   that can span multiple lines
+*/
+
+let x = 5; // End-of-line comment
+```
+
 ### While Loops
 
 Repeat code while a condition is true:
@@ -168,6 +213,6 @@ let flag: bool = true;
 
 ## Features I want to add 🦴
 
-- Functions
-- Lambda functions
-- Classes/OOP support (Maybe)
+- Better variable scoping
+- Classes/OOP support
+- A standard library with built in functions

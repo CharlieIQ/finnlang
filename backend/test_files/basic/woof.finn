@@ -1,0 +1,27 @@
+// Test basic woof (print) functionality
+
+// Simple string printing
+woof("Hello, FinnLang!");
+
+// Variable printing
+let name = "Finn";
+woof(name);
+
+// Number printing
+let age = 5;
+woof(age);
+
+// Boolean printing
+let is_good_dog = true;
+woof(is_good_dog);
+
+// Multiple woofs
+woof("First line");
+woof("Second line");
+woof("Third line");
+
+// Empty string
+woof("");
+
+// Concatenated output
+woof("Dog name: " + name + ", Age: " + age);

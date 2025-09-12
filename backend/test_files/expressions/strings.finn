@@ -1,0 +1,46 @@
+// Test string operations and concatenation
+
+// Basic string concatenation
+let first = "Hello";
+let second = "World";
+let greeting = first + " " + second;
+woof(greeting);
+
+// Concatenating with variables
+let name = "Finn";
+let age = 5;
+let intro = "My dog " + name + " is " + age + " years old";
+woof(intro);
+
+// Multiple concatenations
+let part1 = "This ";
+let part2 = "is ";
+let part3 = "a ";
+let part4 = "test";
+let complete = part1 + part2 + part3 + part4;
+woof(complete);
+
+// Concatenating numbers as strings
+let num1 = 42;
+let num2 = 24;
+let num_string = "Numbers: " + num1 + " and " + num2;
+woof(num_string);
+
+// Empty string concatenation
+let empty = "";
+let with_empty = "Start" + empty + "End";
+woof(with_empty);
+
+// Boolean to string concatenation
+let flag = true;
+let bool_string = "The flag is: " + flag;
+woof(bool_string);
+
+// Chained operations
+let result = "Result: " + (10 + 5) + " (calculated)";
+woof(result);
+
+// String with special characters
+let special = "Line 1\nLine 2";  // If newlines are supported
+let quoted = "He said \"Hello\"";  // If escape sequences are supported
+woof("Special characters test completed");

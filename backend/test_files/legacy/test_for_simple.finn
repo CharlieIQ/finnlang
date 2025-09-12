@@ -1,0 +1,8 @@
+// Simple for loop test
+woof("Starting for loop test...");
+
+for (let i = 0; i < 3; i = i + 1) {
+    woof("i is: " + i);
+}
+
+woof("For loop completed!");

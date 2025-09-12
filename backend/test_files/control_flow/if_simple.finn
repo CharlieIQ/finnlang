@@ -1,0 +1,27 @@
+// Test if statements (simple conditions)
+
+let x = 10;
+
+// Basic if
+if (x > 5) {
+    woof("x is greater than 5");
+}
+
+// If with else
+if (x < 5) {
+    woof("x is less than 5");
+} else {
+    woof("x is not less than 5");
+}
+
+// Boolean variable condition
+let is_positive = x > 0;
+if (is_positive) {
+    woof("x is positive");
+}
+
+// String comparison
+let name = "Finn";
+if (name == "Finn") {
+    woof("The dog's name is Finn!");
+}

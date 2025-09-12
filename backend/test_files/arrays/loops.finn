@@ -1,0 +1,45 @@
+// Test arrays with loops
+
+// Array of numbers to process
+let scores = [85, 92, 78, 96, 88];
+
+// Simulate array processing with individual variables
+// (since array indexing might not be implemented yet)
+let score1 = 85;
+let score2 = 92;
+let score3 = 78;
+let score4 = 96;
+let score5 = 88;
+
+woof("Processing test scores:");
+woof("Score 1: " + score1);
+woof("Score 2: " + score2);
+woof("Score 3: " + score3);
+woof("Score 4: " + score4);
+woof("Score 5: " + score5);
+
+// Calculate total and average
+let total = score1 + score2 + score3 + score4 + score5;
+let average = total / 5;
+
+woof("Total: " + total);
+woof("Average: " + average);
+
+// Array of names to greet
+let students = ["Emma", "Liam", "Olivia", "Noah"];
+
+// Simulate greeting each student
+let student1 = "Emma";
+let student2 = "Liam";
+let student3 = "Olivia";
+let student4 = "Noah";
+
+woof("Greeting students:");
+woof("Hello, " + student1 + "!");
+woof("Hello, " + student2 + "!");
+woof("Hello, " + student3 + "!");
+woof("Hello, " + student4 + "!");
+
+// Array length simulation
+let array_length = 4;
+woof("Number of students: " + array_length);

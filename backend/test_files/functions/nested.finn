@@ -1,0 +1,58 @@
+// Test nested function calls and complex function usage
+
+// Helper functions
+funct printSeparator() {
+    woof("==================");
+}
+
+funct printTitle(title: string) {
+    printSeparator();
+    woof(title);
+    printSeparator();
+}
+
+// Math functions
+funct add(a: int, b: int) {
+    let result = a + b;
+    woof(a + " + " + b + " = " + result);
+}
+
+funct multiply(a: int, b: int) {
+    let result = a * b;
+    woof(a + " * " + b + " = " + result);
+}
+
+// Function that calls other functions
+funct doMath(x: int, y: int) {
+    printTitle("Math Operations");
+    add(x, y);
+    multiply(x, y);
+}
+
+// Recursive-style function (simulated with loop)
+funct countDown(start: int) {
+    printTitle("Countdown");
+    let i = start;
+    while (i > 0) {
+        woof("Count: " + i);
+        i = i - 1;
+    }
+    woof("Done!");
+}
+
+// Function with local variables
+funct processNumbers(num1: int, num2: int) {
+    let sum = num1 + num2;
+    let product = num1 * num2;
+    let average = sum / 2;
+    
+    woof("Numbers: " + num1 + ", " + num2);
+    woof("Sum: " + sum);
+    woof("Product: " + product);
+    woof("Average: " + average);
+}
+
+// Call nested functions
+doMath(5, 3);
+countDown(5);
+processNumbers(8, 12);

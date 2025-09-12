@@ -1,0 +1,10 @@
+// Simple function test
+woof("Before function definition");
+
+funct testFunc() {
+    woof("Inside function!");
+}
+
+woof("After function definition");
+testFunc();
+woof("After function call");

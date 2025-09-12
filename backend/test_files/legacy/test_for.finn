@@ -1,0 +1,13 @@
+// Test for loops with the new syntax
+
+// Basic for loop
+for (let i = 0; i < 5; i = i + 1) {
+    woof(i);
+}
+
+// For loop with string concatenation
+for (let j = 1; j <= 3; j = j + 1) {
+    woof("Count: " + j);
+}
+
+woof("For loop test completed!");

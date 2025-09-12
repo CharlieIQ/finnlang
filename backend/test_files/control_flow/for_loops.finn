@@ -1,0 +1,33 @@
+// Test for loops
+
+// Basic for loop
+for (let i = 0; i < 5; i = i + 1) {
+    woof("Loop iteration: " + i);
+}
+
+// For loop with different step
+for (let j = 0; j < 10; j = j + 2) {
+    woof("Even number: " + j);
+}
+
+// Countdown for loop
+for (let k = 10; k > 0; k = k - 1) {
+    woof("Countdown: " + k);
+}
+
+// Nested for loops (multiplication table)
+for (let x = 1; x <= 3; x = x + 1) {
+    for (let y = 1; y <= 3; y = y + 1) {
+        let result = x * y;
+        woof(x + " * " + y + " = " + result);
+    }
+}
+
+// For loop with string manipulation
+for (let n = 1; n <= 5; n = n + 1) {
+    let stars = "";
+    for (let s = 0; s < n; s = s + 1) {
+        stars = stars + "*";
+    }
+    woof(stars);
+}

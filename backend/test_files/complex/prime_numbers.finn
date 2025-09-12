@@ -1,0 +1,107 @@
+// Prime number checker and generator
+
+// Function to check if a number is prime
+funct isPrime(n: int) {
+    if (n <= 1) {
+        return false;
+    }
+    if (n <= 3) {
+        return true;
+    }
+    if (n % 2 == 0 || n % 3 == 0) {
+        return false;
+    }
+    
+    // Check for factors from 5 onwards
+    let i = 5;
+    while (i * i <= n) {
+        if (n % i == 0 || n % (i + 2) == 0) {
+            return false;
+        }
+        i = i + 6;
+    }
+    return true;
+}
+
+// Function to display prime status
+funct checkPrimeStatus(num: int) {
+    if (isPrime(num)) {
+        woof(num + " is PRIME");
+    } else {
+        woof(num + " is NOT prime");
+    }
+}
+
+// Function to find primes in a range
+funct findPrimesInRange(start: int, end: int) {
+    woof("Prime numbers between " + start + " and " + end + ":");
+    
+    let current = start;
+    let count = 0;
+    
+    while (current <= end) {
+        if (isPrime(current)) {
+            woof(current);
+            count = count + 1;
+        }
+        current = current + 1;
+    }
+    
+    woof("Found " + count + " prime numbers");
+}
+
+// Function to generate first N primes
+funct generateFirstNPrimes(n: int) {
+    woof("First " + n + " prime numbers:");
+    
+    let count = 0;
+    let current = 2;
+    
+    while (count < n) {
+        if (isPrime(current)) {
+            woof(current);
+            count = count + 1;
+        }
+        current = current + 1;
+    }
+}
+
+// Function to check twin primes
+funct checkTwinPrimes(p1: int, p2: int) {
+    if (isPrime(p1) && isPrime(p2) && (p2 - p1 == 2)) {
+        woof(p1 + " and " + p2 + " are TWIN PRIMES!");
+    } else {
+        woof(p1 + " and " + p2 + " are NOT twin primes");
+    }
+}
+
+// Main program
+woof("=== Prime Number Analysis ===");
+woof("");
+
+// Test individual numbers
+woof("Testing individual numbers:");
+checkPrimeStatus(2);
+checkPrimeStatus(3);
+checkPrimeStatus(4);
+checkPrimeStatus(17);
+checkPrimeStatus(25);
+checkPrimeStatus(29);
+checkPrimeStatus(100);
+woof("");
+
+// Find primes in range
+findPrimesInRange(10, 30);
+woof("");
+
+// Generate first N primes
+generateFirstNPrimes(10);
+woof("");
+
+// Check twin primes
+woof("Testing twin primes:");
+checkTwinPrimes(3, 5);
+checkTwinPrimes(5, 7);
+checkTwinPrimes(11, 13);
+checkTwinPrimes(17, 19);
+checkTwinPrimes(7, 11);  // Not twins

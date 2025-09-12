@@ -1,0 +1,46 @@
+// Test if/elif/else chains
+
+let score = 85;
+
+// Grade calculator
+if (score >= 90) {
+    woof("Grade: A");
+} elif (score >= 80) {
+    woof("Grade: B");
+} elif (score >= 70) {
+    woof("Grade: C");
+} elif (score >= 60) {
+    woof("Grade: D");
+} else {
+    woof("Grade: F");
+}
+
+// Multiple elif test
+let day = 3;
+if (day == 1) {
+    woof("Monday");
+} elif (day == 2) {
+    woof("Tuesday");
+} elif (day == 3) {
+    woof("Wednesday");
+} elif (day == 4) {
+    woof("Thursday");
+} elif (day == 5) {
+    woof("Friday");
+} else {
+    woof("Weekend");
+}
+
+// Nested conditions
+let age = 25;
+let has_license = true;
+
+if (age >= 16) {
+    if (has_license) {
+        woof("Can drive!");
+    } else {
+        woof("Need a license");
+    }
+} else {
+    woof("Too young to drive");
+}

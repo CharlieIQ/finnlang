@@ -1,0 +1,21 @@
+/* 
+   Final test: All new features working together
+   - Comments (single and multi-line)
+   - For loops
+   - Functions
+*/
+
+// Function to count using for loop
+funct countToN(n: int) {
+    woof("Counting to " + n + ":");
+    for (let i = 1; i <= n; i = i + 1) {
+        woof("  " + i); // Indented output with comment
+    }
+    woof("Done counting!");
+}
+
+// Main program
+woof("=== FinnLang Feature Demo ===");
+countToN(3);
+
+/* End of program */

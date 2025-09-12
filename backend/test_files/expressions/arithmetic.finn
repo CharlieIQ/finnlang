@@ -1,0 +1,50 @@
+// Test complex arithmetic expressions and operator precedence
+
+// Basic arithmetic precedence
+let result1 = 2 + 3 * 4;  // Should be 14 (3*4=12, then +2)
+woof("2 + 3 * 4 = " + result1);
+
+let result2 = (2 + 3) * 4;  // Should be 20 ((2+3)=5, then *4)
+woof("(2 + 3) * 4 = " + result2);
+
+// Division and multiplication
+let result3 = 20 / 4 * 2;  // Should be 10 (20/4=5, then *2)
+woof("20 / 4 * 2 = " + result3);
+
+let result4 = 20 / (4 * 2);  // Should be 2.5 (4*2=8, then 20/8)
+woof("20 / (4 * 2) = " + result4);
+
+// Modulo operations
+let result5 = 17 % 5;  // Should be 2
+woof("17 % 5 = " + result5);
+
+let result6 = (10 + 7) % 5;  // Should be 2 (17 % 5)
+woof("(10 + 7) % 5 = " + result6);
+
+// Complex expressions
+let a = 5;
+let b = 3;
+let c = 2;
+
+let complex1 = a * b + c;  // 5*3+2 = 17
+woof("a * b + c = " + complex1);
+
+let complex2 = a * (b + c);  // 5*(3+2) = 25
+woof("a * (b + c) = " + complex2);
+
+let complex3 = (a + b) * (a - b);  // (5+3)*(5-3) = 8*2 = 16
+woof("(a + b) * (a - b) = " + complex3);
+
+// Negative numbers
+let negative = -5;
+let result7 = negative * 3;  // Should be -15
+woof("-5 * 3 = " + result7);
+
+let result8 = 10 + negative;  // Should be 5
+woof("10 + (-5) = " + result8);
+
+// Double/float arithmetic
+let pi = 3.14159;
+let radius = 5.0;
+let area = pi * radius * radius;
+woof("Circle area (r=5): " + area);

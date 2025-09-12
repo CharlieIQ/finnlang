@@ -1,0 +1,27 @@
+// Test basic variable declarations and type annotations
+
+// Integer variables
+let x = 42;
+let negative = -15;
+
+// String variables
+let name: string = "Charlie";
+let greeting = "Hello, world!";
+
+// Boolean variables
+let flag: bool = true;
+let finished = false;
+
+// Double/floating point
+let price = 19.99;
+let temperature = -5.5;
+
+// Print all variables
+woof("Integer x: " + x);
+woof("Negative number: " + negative);
+woof("Name: " + name);
+woof("Greeting: " + greeting);
+woof("Flag: " + flag);
+woof("Finished: " + finished);
+woof("Price: " + price);
+woof("Temperature: " + temperature);

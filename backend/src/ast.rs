@@ -1,15 +1,16 @@
+// Fix linting warnings for unused code during development
 #![allow(dead_code)]
 // Represents the basic data types supported by the language
 #[derive(Clone, Debug)]
 pub enum Type {
-    // Integer 
-    Int,    
-    // Boolean 
-    Bool,   
-    // String 
+    // Integer
+    Int,
+    // Boolean
+    Bool,
+    // String
     String,
     // Floating-point
-    Double, 
+    Double,
 }
 
 // Represents different kinds of statements in the language
@@ -27,13 +28,25 @@ pub enum Stmt {
     // While loop with a condition expression and a block of statements to execute repeatedly
     While(Expr, Vec<Stmt>),
 
-    // If/Elif/Else statement
-    If(
-        Expr,
-        Vec<Stmt>, 
-        Vec<(Expr, Vec<Stmt>)>, 
-        Option<Vec<Stmt>>,      
+    // For loop with init, condition, update, and body
+    For(
+        Option<Box<Stmt>>,
+        Option<Expr>,
+        Option<Box<Stmt>>,
+        Vec<Stmt>,
     ),
+
+    // If/Elif/Else statement
+    If(Expr, Vec<Stmt>, Vec<(Expr, Vec<Stmt>)>, Option<Vec<Stmt>>),
+
+    // Function definition: name, parameters (name, type), return type, body
+    FunctionDef(String, Vec<(String, Type)>, Option<Type>, Vec<Stmt>),
+
+    // Return statement with optional expression
+    Return(Option<Expr>),
+
+    // Expression statement (for standalone expressions like function calls)
+    ExprStmt(Expr),
 }
 
 // Represents expressions that can be evaluated to produce values
@@ -53,6 +66,9 @@ pub enum Expr {
 
     // Variable reference by name
     Var(String),
+
+    // Function call with name and arguments
+    FunctionCall(String, Vec<Expr>),
 
     // Arithmetic binary operations (addition, subtraction, multiplication, division, modulo)
     Add(Box<Expr>, Box<Expr>),

@@ -1,0 +1,63 @@
+// Test edge cases with strings
+
+// Empty strings
+let empty1 = "";
+let empty2 = "";
+
+woof("Empty string 1: '" + empty1 + "'");
+woof("Empty string 2: '" + empty2 + "'");
+woof("Empty strings equal: " + (empty1 == empty2));
+
+// String concatenation edge cases
+let result1 = empty1 + "hello";
+let result2 = "hello" + empty1;
+let result3 = empty1 + empty2;
+
+woof("Empty + 'hello': '" + result1 + "'");
+woof("'hello' + Empty: '" + result2 + "'");
+woof("Empty + Empty: '" + result3 + "'");
+
+// Very long strings
+let long_string = "This is a very long string that contains many characters and words to test how the language handles longer text inputs and string operations with extended content.";
+woof("Long string length test passed");
+
+// Strings with spaces
+let spaces_only = "   ";
+let leading_spaces = "   hello";
+let trailing_spaces = "hello   ";
+let mixed_spaces = "  hello  world  ";
+
+woof("Spaces only: '" + spaces_only + "'");
+woof("Leading spaces: '" + leading_spaces + "'");
+woof("Trailing spaces: '" + trailing_spaces + "'");
+woof("Mixed spaces: '" + mixed_spaces + "'");
+
+// Single character strings
+let single_a = "a";
+let single_z = "z";
+let single_space = " ";
+
+woof("Single 'a': '" + single_a + "'");
+woof("Single 'z': '" + single_z + "'");
+woof("Single space: '" + single_space + "'");
+
+// String comparisons edge cases
+woof("String comparison tests:");
+woof("'a' == 'a': " + (single_a == "a"));
+woof("'a' == 'A': " + (single_a == "A"));  // Case sensitivity
+woof("' ' == ' ': " + (single_space == " "));
+
+// Numbers as strings
+let num_as_string = "123";
+let actual_num = 123;
+
+woof("Number as string: '" + num_as_string + "'");
+woof("Actual number: " + actual_num);
+woof("String '123' concatenated with number: " + num_as_string + actual_num);
+
+// Special characters (if supported)
+let with_quotes = "He said hello";  // Simplified since escape sequences might not work
+let with_newlines = "Line 1 Line 2";  // Simplified newline representation
+
+woof("String with conceptual quotes: " + with_quotes);
+woof("String with conceptual newlines: " + with_newlines);

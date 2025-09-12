@@ -1,0 +1,24 @@
+// Test simple functions without parameters
+
+// Simple function with no parameters
+funct sayHello() {
+    woof("Hello from function!");
+}
+
+// Function that prints multiple lines
+funct introduction() {
+    woof("Welcome to FinnLang!");
+    woof("This is a simple programming language.");
+    woof("Have fun coding!");
+}
+
+// Function with calculations
+funct showMath() {
+    let result = 5 + 3;
+    woof("5 + 3 = " + result);
+}
+
+// Call all functions
+sayHello();
+introduction();
+showMath();

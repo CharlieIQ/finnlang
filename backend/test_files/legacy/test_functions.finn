@@ -1,0 +1,24 @@
+// Test function definitions and calls
+
+// Simple function without parameters
+funct sayHello() {
+    woof("Hello from function!");
+}
+
+// Function with parameters
+funct greet(name: string, age: int) {
+    woof("Hello " + name + ", you are " + age + " years old!");
+}
+
+// Function with return type (though we'll implement returns later)
+funct add(a: int, b: int): int {
+    let result = a + b;
+    woof("Adding " + a + " + " + b + " = " + result);
+}
+
+// Call the functions
+sayHello();
+greet("Alice", 25);
+add(5, 3);
+
+woof("Function test completed!");

@@ -1,0 +1,114 @@
+// Classic programming problems implemented in FinnLang
+
+// Fibonacci sequence generator
+funct fibonacci(n: int) {
+    woof("Fibonacci sequence up to " + n + " terms:");
+    
+    if (n <= 0) {
+        woof("Invalid input");
+        return;
+    }
+    
+    if (n >= 1) {
+        woof("0");
+    }
+    if (n >= 2) {
+        woof("1");
+    }
+    
+    if (n > 2) {
+        let prev2 = 0;
+        let prev1 = 1;
+        
+        for (let i = 3; i <= n; i = i + 1) {
+            let current = prev1 + prev2;
+            woof(current);
+            prev2 = prev1;
+            prev1 = current;
+        }
+    }
+}
+
+// FizzBuzz implementation
+funct fizzBuzz(max: int) {
+    woof("FizzBuzz from 1 to " + max + ":");
+    
+    for (let i = 1; i <= max; i = i + 1) {
+        if (i % 15 == 0) {
+            woof("FizzBuzz");
+        } elif (i % 3 == 0) {
+            woof("Fizz");
+        } elif (i % 5 == 0) {
+            woof("Buzz");
+        } else {
+            woof(i);
+        }
+    }
+}
+
+// Greatest Common Divisor (Euclidean algorithm)
+funct gcd(a: int, b: int) {
+    woof("Finding GCD of " + a + " and " + b);
+    
+    while (b != 0) {
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    
+    woof("GCD: " + a);
+    return a;
+}
+
+// Palindrome checker for numbers
+funct isPalindrome(num: int) {
+    let original = num;
+    let reversed = 0;
+    
+    while (num > 0) {
+        let digit = num % 10;
+        reversed = reversed * 10 + digit;
+        num = num / 10;
+    }
+    
+    if (original == reversed) {
+        woof(original + " is a palindrome");
+    } else {
+        woof(original + " is not a palindrome");
+    }
+}
+
+// Sum of digits
+funct sumOfDigits(num: int) {
+    let original = num;
+    let sum = 0;
+    
+    while (num > 0) {
+        sum = sum + (num % 10);
+        num = num / 10;
+    }
+    
+    woof("Sum of digits of " + original + " is " + sum);
+}
+
+// Run all classic problems
+woof("=== Classic Programming Problems ===");
+woof("");
+
+fibonacci(10);
+woof("");
+
+fizzBuzz(20);
+woof("");
+
+gcd(48, 18);
+gcd(100, 25);
+woof("");
+
+isPalindrome(121);
+isPalindrome(123);
+isPalindrome(1221);
+woof("");
+
+sumOfDigits(1234);
+sumOfDigits(9876);

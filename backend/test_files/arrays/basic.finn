@@ -1,0 +1,33 @@
+// Test basic array declarations and operations
+
+// Integer arrays
+let numbers = [1, 2, 3, 4, 5];
+let fibonacci = [0, 1, 1, 2, 3, 5, 8, 13];
+
+// String arrays
+let names = ["Alice", "Bob", "Charlie", "Diana"];
+let colors = ["red", "green", "blue"];
+
+// Boolean array
+let flags = [true, false, true, false];
+
+// Mixed arrays (if supported)
+let mixed = [1, "hello", true, 42];
+
+// Empty array
+let empty = [];
+
+// Print array information
+woof("Numbers array declared");
+woof("Names array declared"); 
+woof("Colors array declared");
+woof("Flags array declared");
+woof("Mixed array declared");
+woof("Empty array declared");
+
+// Basic array access (if supported)
+// Note: This assumes array indexing is implemented
+// woof("First number: " + numbers[0]);
+// woof("First name: " + names[0]);
+
+woof("Array declarations completed successfully!");

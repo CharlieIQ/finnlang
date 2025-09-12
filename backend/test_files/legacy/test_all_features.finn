@@ -1,0 +1,46 @@
+// Comprehensive test of all new features
+
+/* 
+   Multi-line comment: Testing all the new features together!
+   - For loops
+   - Functions  
+   - Comments
+*/
+
+// Define a function to calculate factorial
+funct factorial(n: int): int {
+    let result = 1;
+    
+    // Use a for loop to calculate factorial
+    for (let i = 1; i <= n; i = i + 1) {
+        result = result * i; // This is a comment
+    }
+    
+    woof("Factorial of " + n + " is " + result);
+}
+
+// Define a function to print numbers in a range
+funct printRange(start: int, end: int) {
+    woof("Printing numbers from " + start + " to " + end + ":");
+    for (let i = start; i <= end; i = i + 1) {
+        woof(i);
+    }
+}
+
+// Main program
+woof("=== FinnLang New Features Test ===");
+
+// Test functions with for loops
+factorial(5);
+printRange(1, 5);
+
+// Test nested for loops
+woof("Multiplication table:");
+for (let i = 1; i <= 3; i = i + 1) {
+    for (let j = 1; j <= 3; j = j + 1) {
+        let product = i * j;
+        woof(i + " * " + j + " = " + product);
+    }
+}
+
+woof("All tests completed successfully!");

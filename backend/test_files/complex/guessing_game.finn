@@ -1,0 +1,85 @@
+// Number guessing game simulation
+
+// Function to check guess
+funct checkGuess(guess: int, target: int, attempt: int) {
+    woof("Attempt " + attempt + ": Guessing " + guess);
+    
+    if (guess == target) {
+        woof("🎉 Correct! The number was " + target);
+        woof("You won in " + attempt + " attempts!");
+        return true;
+    } elif (guess < target) {
+        woof("Too low! Try a higher number.");
+        return false;
+    } else {
+        woof("Too high! Try a lower number.");
+        return false;
+    }
+}
+
+// Function to simulate game
+funct playGame(target: int) {
+    woof("=== Number Guessing Game ===");
+    woof("I'm thinking of a number between 1 and 100");
+    woof("The secret number is: " + target);
+    woof("");
+    
+    // Simulate some guesses
+    let attempts = 1;
+    let found = false;
+    
+    // First guess - middle of range
+    let guess = 50;
+    found = checkGuess(guess, target, attempts);
+    
+    if (!found) {
+        attempts = attempts + 1;
+        if (guess < target) {
+            guess = 75;  // Guess higher
+        } else {
+            guess = 25;  // Guess lower
+        }
+        found = checkGuess(guess, target, attempts);
+    }
+    
+    if (!found) {
+        attempts = attempts + 1;
+        if (guess < target) {
+            guess = guess + 12;  // Adjust up
+        } else {
+            guess = guess - 12;  // Adjust down
+        }
+        found = checkGuess(guess, target, attempts);
+    }
+    
+    if (!found) {
+        attempts = attempts + 1;
+        if (guess < target) {
+            guess = guess + 6;   // Fine tune up
+        } else {
+            guess = guess - 6;   // Fine tune down
+        }
+        found = checkGuess(guess, target, attempts);
+    }
+    
+    if (!found) {
+        attempts = attempts + 1;
+        // Final adjustment
+        if (guess < target) {
+            guess = target;  // Just guess the target
+        } else {
+            guess = target;
+        }
+        checkGuess(guess, target, attempts);
+    }
+}
+
+// Play multiple games
+woof("Starting Number Guessing Game Tests");
+woof("");
+
+playGame(42);
+woof("");
+playGame(17);
+woof("");
+playGame(89);

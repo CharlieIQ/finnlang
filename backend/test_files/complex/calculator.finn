@@ -1,0 +1,84 @@
+// Calculator program with functions and loops
+
+// Function to display menu
+funct showMenu() {
+    woof("=== FinnLang Calculator ===");
+    woof("1. Addition");
+    woof("2. Subtraction");
+    woof("3. Multiplication");
+    woof("4. Division");
+    woof("5. Factorial");
+    woof("========================");
+}
+
+// Addition function
+funct add(a: int, b: int) {
+    let result = a + b;
+    woof(a + " + " + b + " = " + result);
+}
+
+// Subtraction function
+funct subtract(a: int, b: int) {
+    let result = a - b;
+    woof(a + " - " + b + " = " + result);
+}
+
+// Multiplication function
+funct multiply(a: int, b: int) {
+    let result = a * b;
+    woof(a + " * " + b + " = " + result);
+}
+
+// Division function
+funct divide(a: int, b: int) {
+    if (b == 0) {
+        woof("Error: Division by zero!");
+    } else {
+        let result = a / b;
+        woof(a + " / " + b + " = " + result);
+    }
+}
+
+// Factorial function using loop
+funct factorial(n: int) {
+    if (n < 0) {
+        woof("Error: Factorial of negative number!");
+    } elif (n == 0 || n == 1) {
+        woof(n + "! = 1");
+    } else {
+        let result = 1;
+        let i = 2;
+        while (i <= n) {
+            result = result * i;
+            i = i + 1;
+        }
+        woof(n + "! = " + result);
+    }
+}
+
+// Main program
+showMenu();
+
+// Test all operations
+woof("Testing Addition:");
+add(15, 25);
+add(100, 50);
+
+woof("Testing Subtraction:");
+subtract(50, 20);
+subtract(10, 15);
+
+woof("Testing Multiplication:");
+multiply(6, 7);
+multiply(12, 3);
+
+woof("Testing Division:");
+divide(20, 4);
+divide(15, 3);
+divide(10, 0);  // Test division by zero
+
+woof("Testing Factorial:");
+factorial(5);
+factorial(0);
+factorial(1);
+factorial(6);

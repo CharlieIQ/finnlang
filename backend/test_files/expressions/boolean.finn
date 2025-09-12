@@ -1,0 +1,47 @@
+// Test boolean logic and comparison operations
+
+// Boolean variables
+let true_val = true;
+let false_val = false;
+
+// Logical AND operations
+woof("Boolean AND tests:");
+woof("true && true = " + (true_val && true_val));
+woof("true && false = " + (true_val && false_val));
+woof("false && true = " + (false_val && true_val));
+woof("false && false = " + (false_val && false_val));
+
+// Logical OR operations
+woof("Boolean OR tests:");
+woof("true || true = " + (true_val || true_val));
+woof("true || false = " + (true_val || false_val));
+woof("false || true = " + (false_val || true_val));
+woof("false || false = " + (false_val || false_val));
+
+// Logical NOT operations
+woof("Boolean NOT tests:");
+woof("!true = " + (!true_val));
+woof("!false = " + (!false_val));
+
+// Comparison operations
+let a = 10;
+let b = 5;
+let c = 10;
+
+woof("Comparison tests:");
+woof("10 == 5: " + (a == b));
+woof("10 == 10: " + (a == c));
+woof("10 != 5: " + (a != b));
+woof("10 != 10: " + (a != c));
+woof("10 < 5: " + (a < b));
+woof("5 < 10: " + (b < a));
+
+// String comparisons
+let str1 = "hello";
+let str2 = "world";
+let str3 = "hello";
+
+woof("String comparison tests:");
+woof("hello == world: " + (str1 == str2));
+woof("hello == hello: " + (str1 == str3));
+woof("hello != world: " + (str1 != str2));

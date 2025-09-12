@@ -1,0 +1,51 @@
+// Test edge cases with numbers and arithmetic
+
+// Large numbers
+let large_positive = 999999999;
+let large_negative = -999999999;
+
+woof("Large positive: " + large_positive);
+woof("Large negative: " + large_negative);
+
+// Zero operations
+let zero = 0;
+woof("Zero: " + zero);
+woof("Zero + 5: " + (zero + 5));
+woof("Zero * 100: " + (zero * 100));
+woof("5 - 0: " + (5 - zero));
+
+// Division edge cases
+woof("10 / 1: " + (10 / 1));
+woof("10 / 10: " + (10 / 10));
+
+// Note: Division by zero should be handled by the interpreter
+// woof("10 / 0: " + (10 / 0));  // This might cause an error
+
+// Modulo edge cases
+woof("10 % 1: " + (10 % 1));
+woof("10 % 10: " + (10 % 10));
+woof("7 % 3: " + (7 % 3));
+
+// Very small decimals
+let small_decimal = 0.001;
+let tiny_decimal = 0.0000001;
+
+woof("Small decimal: " + small_decimal);
+woof("Tiny decimal: " + tiny_decimal);
+
+// Arithmetic with decimals and integers
+let mixed_result = 5 + 3.14;
+woof("Integer + Decimal: " + mixed_result);
+
+// Negative number operations
+let neg1 = -5;
+let neg2 = -3;
+
+woof("Negative + Negative: " + (neg1 + neg2));
+woof("Negative * Negative: " + (neg1 * neg2));
+woof("Negative - Positive: " + (neg1 - 5));
+
+// Boundary comparisons
+woof("Large number comparisons:");
+woof("999999999 == 999999999: " + (large_positive == 999999999));
+woof("999999999 < 1000000000: " + (large_positive < 1000000000));

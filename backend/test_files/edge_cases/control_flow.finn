@@ -1,0 +1,85 @@
+// Test edge cases with loops and control flow
+
+// While loop with immediate false condition
+let never_execute = false;
+while (never_execute) {
+    woof("This should never print");
+}
+woof("While loop with false condition completed");
+
+// While loop with single iteration
+let count_once = 1;
+while (count_once > 0) {
+    woof("Single iteration: " + count_once);
+    count_once = count_once - 1;
+}
+woof("Single iteration while loop completed");
+
+// For loop with zero iterations
+for (let i = 5; i < 5; i = i + 1) {
+    woof("This should never print");
+}
+woof("Zero iteration for loop completed");
+
+// For loop with single iteration
+for (let j = 0; j < 1; j = j + 1) {
+    woof("Single for loop iteration: " + j);
+}
+woof("Single iteration for loop completed");
+
+// Nested loops with minimal iterations
+for (let outer = 0; outer < 2; outer = outer + 1) {
+    woof("Outer loop: " + outer);
+    for (let inner = 0; inner < 2; inner = inner + 1) {
+        woof("  Inner loop: " + inner);
+    }
+}
+
+// If statements with complex boolean conditions
+let a = 5;
+let b = 10;
+let c = 15;
+
+// Multiple conditions
+if ((a < b) && (b < c) && (a + b < c)) {
+    woof("All conditions true");
+}
+
+if ((a > b) || (b > c) || (a + b > c)) {
+    woof("At least one condition true");
+}
+
+// Nested if statements (deep nesting)
+if (a < b) {
+    if (b < c) {
+        if (a + b == c) {
+            woof("Deep nested condition met");
+        } else {
+            woof("Deep nested else");
+        }
+    }
+}
+
+// Long elif chain
+let test_value = 7;
+if (test_value == 1) {
+    woof("One");
+} elif (test_value == 2) {
+    woof("Two");
+} elif (test_value == 3) {
+    woof("Three");
+} elif (test_value == 4) {
+    woof("Four");
+} elif (test_value == 5) {
+    woof("Five");
+} elif (test_value == 6) {
+    woof("Six");
+} elif (test_value == 7) {
+    woof("Seven - found it!");
+} elif (test_value == 8) {
+    woof("Eight");
+} else {
+    woof("Something else");
+}
+
+woof("Control flow edge cases completed");

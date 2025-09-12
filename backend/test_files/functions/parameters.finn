@@ -1,0 +1,41 @@
+// Test functions with parameters
+
+// Function with one parameter
+funct greet(name: string) {
+    woof("Hello, " + name + "!");
+}
+
+// Function with multiple parameters
+funct introduce(name: string, age: int) {
+    woof("Hi, I'm " + name + " and I'm " + age + " years old.");
+}
+
+// Function with mixed parameter types
+funct displayInfo(name: string, score: int, passed: bool) {
+    woof("Student: " + name);
+    woof("Score: " + score);
+    if (passed) {
+        woof("Status: PASSED");
+    } else {
+        woof("Status: FAILED");
+    }
+}
+
+// Function with calculations using parameters
+funct calculateArea(length: int, width: int) {
+    let area = length * width;
+    woof("Rectangle area: " + area);
+}
+
+// Call functions with different arguments
+greet("Alice");
+greet("Bob");
+
+introduce("Charlie", 25);
+introduce("Diana", 30);
+
+displayInfo("John", 85, true);
+displayInfo("Jane", 45, false);
+
+calculateArea(5, 3);
+calculateArea(10, 7);

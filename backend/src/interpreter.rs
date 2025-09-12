@@ -3,7 +3,15 @@
 use std::collections::HashMap;
 
 // Import AST node definitions for expressions and statements
-use crate::ast::{Expr, Stmt};
+use crate::ast::{Expr, Stmt, Type};
+
+// Define a function definition structure
+#[derive(Debug, Clone)]
+pub struct FunctionDef {
+    pub params: Vec<(String, Type)>,
+    pub return_type: Option<Type>,
+    pub body: Vec<Stmt>,
+}
 
 // Define the possible runtime values that the interpreter can handle
 #[derive(Debug, Clone, PartialEq)]
@@ -13,6 +21,13 @@ pub enum Value {
     Str(String),
     Double(f64),
     Array(Vec<Value>),
+}
+
+// Define a return control flow exception
+#[derive(Debug, Clone)]
+pub enum ControlFlow {
+    None,
+    Return(Option<Value>),
 }
 
 // Implement how each value variant should be displayed as a string
@@ -37,6 +52,10 @@ impl fmt::Display for Value {
 pub struct Interpreter {
     // Environment mapping variable names to their current values
     env: HashMap<String, Value>,
+    // Function definitions mapping function names to their definitions
+    functions: HashMap<String, FunctionDef>,
+    // Output buffer for collecting all output
+    output_buffer: String,
 }
 
 impl Interpreter {
@@ -44,99 +63,172 @@ impl Interpreter {
     pub fn new() -> Self {
         Interpreter {
             env: HashMap::new(),
+            functions: HashMap::new(),
+            output_buffer: String::new(),
         }
     }
 
     // Execute a program (a vector of statements) in order
     pub fn run(&mut self, program: Vec<Stmt>) -> String {
         let mut output = String::new();
-
+        // Execute each statement in sequence
         for stmt in program {
-            if let Some(result) = self.execute(stmt) {
-                output.push_str(&result);
-                output.push('\n');
+            match self.execute_with_control(stmt) {
+                (Some(result), ControlFlow::None) => {
+                    output.push_str(&result);
+                    output.push('\n');
+                }
+                (Some(result), ControlFlow::Return(_)) => {
+                    output.push_str(&result);
+                    output.push('\n');
+                    break;
+                }
+                (None, ControlFlow::Return(_)) => {
+                    break;
+                }
+                _ => {}
+            }
+            // Also include any output collected during expression evaluation (like function calls)
+            if !self.output_buffer.is_empty() {
+                output.push_str(&self.output_buffer);
+                self.output_buffer.clear();
             }
         }
-
         output.trim_end().to_string() // remove trailing newline
     }
 
-    // Execute a single statement
-    fn execute(&mut self, stmt: Stmt) -> Option<String> {
+    // Execute a single statement, returning output and control flow
+    fn execute_with_control(&mut self, stmt: Stmt) -> (Option<String>, ControlFlow) {
         match stmt {
             Stmt::Let(_var_type_opt, name, expr) => {
                 let value = self.eval(expr);
                 self.env.insert(name, value);
-                None
+                (None, ControlFlow::None)
             }
 
             Stmt::Print(expr) => {
                 let value = self.eval(expr);
-                Some(value.to_string()) // Return instead of printing
+                (Some(value.to_string()), ControlFlow::None)
             }
 
             Stmt::While(cond, body) => {
                 let mut output = String::new();
-                while let Value::Bool(true) = self.eval(cond.clone()) {
-                    for stmt in &body {
-                        if let Some(out) = self.execute(stmt.clone()) {
-                            output.push_str(&out);
-                            output.push('\n');
+                loop {
+                    if let Value::Bool(true) = self.eval(cond.clone()) {
+                        for stmt in &body {
+                            let (out, control) = self.execute_with_control(stmt.clone());
+                            if let Some(out) = out {
+                                output.push_str(&out);
+                                output.push('\n');
+                            }
+                            if let ControlFlow::Return(val) = control {
+                                return (
+                                    if output.is_empty() {
+                                        None
+                                    } else {
+                                        Some(output)
+                                    },
+                                    ControlFlow::Return(val),
+                                );
+                            }
                         }
+                    } else {
+                        break;
                     }
                 }
                 if output.is_empty() {
-                    None
+                    (None, ControlFlow::None)
                 } else {
-                    Some(output)
+                    (Some(output), ControlFlow::None)
                 }
             }
 
             Stmt::If(cond, if_block, elifs, else_block) => {
+                let mut output = String::new();
                 if let Value::Bool(true) = self.eval(cond) {
-                    let mut output = String::new();
                     for stmt in if_block {
-                        if let Some(out) = self.execute(stmt) {
+                        let (out, control) = self.execute_with_control(stmt);
+                        if let Some(out) = out {
                             output.push_str(&out);
                             output.push('\n');
                         }
+                        if let ControlFlow::Return(val) = control {
+                            return (
+                                if output.is_empty() {
+                                    None
+                                } else {
+                                    Some(output)
+                                },
+                                ControlFlow::Return(val),
+                            );
+                        }
                     }
-                    if output.is_empty() {
-                        None
-                    } else {
-                        Some(output)
-                    }
+                    return (
+                        if output.is_empty() {
+                            None
+                        } else {
+                            Some(output)
+                        },
+                        ControlFlow::None,
+                    );
                 } else {
                     // Check elif branches
-                    let mut matched = false;
-                    let mut output = String::new();
                     for (elif_cond, elif_block) in elifs {
                         if let Value::Bool(true) = self.eval(elif_cond) {
                             for stmt in elif_block {
-                                if let Some(out) = self.execute(stmt) {
+                                let (out, control) = self.execute_with_control(stmt);
+                                if let Some(out) = out {
                                     output.push_str(&out);
                                     output.push('\n');
                                 }
-                            }
-                            matched = true;
-                            break;
-                        }
-                    }
-                    if !matched {
-                        if let Some(else_block) = else_block {
-                            for stmt in else_block {
-                                if let Some(out) = self.execute(stmt) {
-                                    output.push_str(&out);
-                                    output.push('\n');
+                                if let ControlFlow::Return(val) = control {
+                                    return (
+                                        if output.is_empty() {
+                                            None
+                                        } else {
+                                            Some(output)
+                                        },
+                                        ControlFlow::Return(val),
+                                    );
                                 }
                             }
+                            return (
+                                if output.is_empty() {
+                                    None
+                                } else {
+                                    Some(output)
+                                },
+                                ControlFlow::None,
+                            );
                         }
                     }
-                    if output.is_empty() {
-                        None
-                    } else {
-                        Some(output)
+                    if let Some(else_block) = else_block {
+                        for stmt in else_block {
+                            let (out, control) = self.execute_with_control(stmt);
+                            if let Some(out) = out {
+                                output.push_str(&out);
+                                output.push('\n');
+                            }
+                            if let ControlFlow::Return(val) = control {
+                                return (
+                                    if output.is_empty() {
+                                        None
+                                    } else {
+                                        Some(output)
+                                    },
+                                    ControlFlow::Return(val),
+                                );
+                            }
+                        }
                     }
+                    (
+                        if output.is_empty() {
+                            None
+                        } else {
+                            Some(output)
+                        },
+                        ControlFlow::None,
+                    )
                 }
             }
 
@@ -147,13 +239,88 @@ impl Interpreter {
                 } else {
                     panic!("Cannot assign to undeclared variable: {}", name);
                 }
-                None
+                (None, ControlFlow::None)
+            }
+
+            Stmt::For(init, condition, update, body) => {
+                let mut output = String::new();
+                // Execute init statement if present
+                if let Some(init_stmt) = init {
+                    self.execute_with_control(*init_stmt);
+                }
+                // Execute loop
+                loop {
+                    // Check condition (default to true if not present)
+                    let should_continue = if let Some(cond) = &condition {
+                        matches!(self.eval(cond.clone()), Value::Bool(true))
+                    } else {
+                        true
+                    };
+                    if !should_continue {
+                        break;
+                    }
+                    // Execute body
+                    for stmt in &body {
+                        let (out, control) = self.execute_with_control(stmt.clone());
+                        if let Some(out) = out {
+                            output.push_str(&out);
+                            output.push('\n');
+                        }
+                        if let ControlFlow::Return(val) = control {
+                            return (
+                                if output.is_empty() {
+                                    None
+                                } else {
+                                    Some(output)
+                                },
+                                ControlFlow::Return(val),
+                            );
+                        }
+                    }
+                    // Execute update statement if present
+                    if let Some(update_stmt) = &update {
+                        self.execute_with_control(*update_stmt.clone());
+                    }
+                }
+                if output.is_empty() {
+                    (None, ControlFlow::None)
+                } else {
+                    (Some(output), ControlFlow::None)
+                }
+            }
+
+            Stmt::FunctionDef(name, params, return_type, body) => {
+                let func_def = FunctionDef {
+                    params,
+                    return_type,
+                    body,
+                };
+                self.functions.insert(name, func_def);
+                (None, ControlFlow::None)
+            }
+
+            Stmt::Return(expr_opt) => {
+                let value = expr_opt.map(|expr| self.eval(expr));
+                (None, ControlFlow::Return(value))
+            }
+
+            Stmt::ExprStmt(expr) => {
+                // Execute expression for side effects (like function calls)
+                self.eval(expr);
+                // Check if any output was collected during expression evaluation
+                if !self.output_buffer.is_empty() {
+                    let output = self.output_buffer.clone();
+                    self.output_buffer.clear();
+                    (Some(output.trim_end().to_string()), ControlFlow::None)
+                } else {
+                    (None, ControlFlow::None)
+                }
             }
         }
     }
 
-    // Evaluate an expression and return its runtime value
-    fn eval(&self, expr: Expr) -> Value {
+    // Evaluate an expression and return its runtime value and any output from side effects
+    fn eval(&mut self, expr: Expr) -> Value {
         match expr {
             // Literal values
             Expr::Number(n) => Value::Int(n),
@@ -385,6 +552,41 @@ impl Interpreter {
                     (Value::Int(li), Value::Int(ri)) => Value::Bool(li >= ri),
                     (Value::Double(ld), Value::Double(rd)) => Value::Bool(ld >= rd),
                     _ => panic!("Unsupported types for GreaterEqual comparison"),
+                }
+            }
+
+            Expr::FunctionCall(name, args) => {
+                if let Some(func_def) = self.functions.get(&name).cloned() {
+                    let mut func_interpreter = Interpreter::new();
+                    func_interpreter.functions = self.functions.clone();
+                    if args.len() != func_def.params.len() {
+                        panic!(
+                            "Function {} expects {} arguments, got {}",
+                            name,
+                            func_def.params.len(),
+                            args.len()
+                        );
+                    }
+                    for (i, (param_name, _param_type)) in func_def.params.iter().enumerate() {
+                        let arg_value = self.eval(args[i].clone());
+                        func_interpreter.env.insert(param_name.clone(), arg_value);
+                    }
+                    let mut return_value: Option<Value> = None;
+                    for stmt in func_def.body {
+                        let (out, control) = func_interpreter.execute_with_control(stmt);
+                        if let Some(output) = out {
+                            self.output_buffer.push_str(&output);
+                            self.output_buffer.push('\n');
+                        }
+                        if let ControlFlow::Return(val) = control {
+                            return_value = val;
+                            break;
+                        }
+                    }
+                    // If function has a return type, return the value, else return Int(0) by default
+                    return_value.unwrap_or(Value::Int(0))
+                } else {
+                    panic!("Undefined function: {}", name);
                 }
             }
         }

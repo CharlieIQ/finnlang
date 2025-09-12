@@ -2,11 +2,25 @@ import { useState } from 'react';
 import { FaPlay, FaBook, FaTimes, FaCode, FaDog, FaImages } from 'react-icons/fa';
 import './styles/buttons.css';
 
+/**
+ * This is the main app component for the FinnLang IDE. Components include:
+ * - Code editor (just a simple textarea)
+ * - Output display (preformatted text)
+ * - Run button to execute code
+ * - Documentation popup
+ * - A gallery of dog photos because why not
+ * 
+ * I personally chose to keep everything in one file for simplicity since the frontend is so small. 
+ * 
+ * @returns The main app component
+ */
 function App() {
   // State to hold code
   const [code, setCode] = useState("");
   // State to store output
   const [output, setOutput] = useState("");
+  // State to track if last execution had an error
+  const [hasError, setHasError] = useState(false);
   // State to toggle docs popup
   const [showDocs, setShowDocs] = useState(false);
   // State to toggle dog gallery popup
@@ -14,18 +28,35 @@ function App() {
 
   /**
    * This will use the backend to run the code and return an output
+   * or error message. It sends the code to the backend via POST request
+   * and updates the output state based on the response.
    */
   const runCode = async () => {
-    const res = await fetch('http://localhost:3000/run', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code }),
-    });
-    const data = await res.json();
-    setOutput(data.output);
+    try {
+      // Send code to backend
+      const res = await fetch('http://localhost:3000/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setOutput(data.output);
+        setHasError(false);
+      } else {
+        // Display error in a user-friendly way
+        setOutput(`❌ ${data.error}`);
+        setHasError(true);
+      }
+    } catch (error) {
+      setOutput(`❌ Network Error: Failed to connect to server\n${error.message}`);
+      setHasError(true);
+    }
   };
 
   return (
+    // Main container with the editor and output
     <div className="editor-container">
       <header className="editor-header">
         <div className="title-section">
@@ -72,7 +103,7 @@ woof(greeting);`}
           <div className="output-header">
             <span>Output</span>
           </div>
-          <pre className="output-box">{output || "// Click Run to see output here..."}</pre>
+          <pre className={`output-box ${hasError ? 'error' : ''}`}>{output || "// Click Run to see output here..."}</pre>
         </div>
       </div>
       {/* This is for the documentation popup */}
@@ -120,6 +151,55 @@ while (x < 5) {
     woof(x);
     x = x + 1;
 }`}</pre>
+
+              <h3>For Loops</h3>
+              <pre>{`// Basic for loop
+for (let i = 0; i < 5; i = i + 1) {
+    woof(i);
+}
+
+// For loop with string concatenation
+for (let j = 1; j <= 3; j = j + 1) {
+    woof("Count: " + j);
+}`}</pre>
+
+              <h3>Functions</h3>
+              <pre>{`// Function without parameters
+funct sayHello() {
+    woof("Hello, world!");
+}
+
+// Function with parameters
+funct greet(name: string, age: int) {
+    woof("Hello " + name + ", you are " + age + " years old!");
+}
+
+// Function with return type
+funct add(a: int, b: int): int {
+    let result = a + b;
+    woof("Result: " + result);
+}
+
+// Call functions
+sayHello();
+greet("Alice", 25);
+add(5, 3);`}</pre>
+
+              <h3>Comments</h3>
+              <pre>{`// This is a single-line comment
+
+/* 
+   This is a multi-line comment
+   that can span multiple lines
+*/
+
+let x = 5; // End-of-line comment
+
+/* Nested comments work too:
+   /* inner comment */
+   Still in outer comment
+*/`}</pre>
+
               <h3>Arrays</h3>
               <pre>
                 {`let nums = [0, 1, 2, 3, 4, 5];
@@ -156,6 +236,11 @@ while (i < n) {
   i = i + 1;
 }`}</pre>
             </div>
+            <footer className="editor-footer">
+              <p>Made with more coffee, CSCI2100, and love by Charlie McLaughlin</p>
+              <br></br>
+              <p>Also try Piggle 🐽</p>
+            </footer>
           </div>
         </div>
       )}

@@ -1,0 +1,40 @@
+// Test comment syntax variations
+
+// Single line comment at the beginning
+
+let x = 5; // End of line comment
+
+// Multiple single line comments
+// Line 1 of comments
+// Line 2 of comments
+// Line 3 of comments
+
+/* Multi-line comment
+   spanning multiple
+   lines of text */
+
+let y = 10;
+
+/* Single line multi-line comment */
+
+let z = x + y; // Calculate sum
+
+/*
+ * Multi-line comment with
+ * asterisks for formatting
+ * like traditional style
+ */
+
+// Comment before function
+funct testFunction() {
+    // Comment inside function
+    woof("Function with comments");
+    /* Multi-line inside function */
+    let local = 42; // Local variable comment
+}
+
+/* Comment before function call */
+testFunction(); // Call the function
+
+// Final comment
+woof("Comments test completed"); // End comment

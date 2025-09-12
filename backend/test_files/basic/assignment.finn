@@ -1,0 +1,25 @@
+// Test assignment operations
+
+let counter = 0;
+woof("Initial counter: " + counter);
+
+// Basic assignment
+counter = 5;
+woof("After assignment: " + counter);
+
+// Assignment with arithmetic
+counter = counter + 10;
+woof("After addition: " + counter);
+
+counter = counter * 2;
+woof("After multiplication: " + counter);
+
+// String reassignment
+let message = "First";
+woof("Initial message: " + message);
+
+message = "Second";
+woof("After reassignment: " + message);
+
+message = message + " Updated";
+woof("After concatenation: " + message);

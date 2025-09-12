@@ -12,11 +12,23 @@ struct RunRequest {
 #[derive(Serialize)]
 struct RunResponse {
     output: String,
+    error: Option<String>,
+    success: bool,
 }
 
 async fn run_code(Json(payload): Json<RunRequest>) -> Json<RunResponse> {
-    let output = run_finn_code(&payload.code);
-    Json(RunResponse { output })
+    match run_finn_code(&payload.code) {
+        Ok(output) => Json(RunResponse {
+            output,
+            error: None,
+            success: true,
+        }),
+        Err(error) => Json(RunResponse {
+            output: String::new(),
+            error: Some(error.to_string()),
+            success: false,
+        }),
+    }
 }
 
 #[tokio::main]
@@ -28,7 +40,7 @@ async fn main() {
         .allow_headers(Any); // Allow all headers
 
     let app = Router::new().route("/run", post(run_code)).layer(cors); // Attach CORS middleware
-
+    // You can change the address and port as needed
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("Server listening on http://{}", addr);
 

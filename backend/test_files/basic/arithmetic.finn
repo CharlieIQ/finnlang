@@ -1,0 +1,21 @@
+// Test basic arithmetic operations
+
+let a = 10;
+let b = 3;
+
+// Basic arithmetic
+woof("Addition: " + (a + b));
+woof("Subtraction: " + (a - b));
+woof("Multiplication: " + (a * b));
+woof("Division: " + (a / b));
+woof("Modulo: " + (a % b));
+
+// String concatenation
+let first = "Hello";
+let second = "World";
+let combined = first + " " + second;
+woof("String concat: " + combined);
+
+// Mixed operations
+let result = (a + b) * 2;
+woof("Complex arithmetic: " + result);

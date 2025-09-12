@@ -9,10 +9,13 @@ pub enum Token {
     StringType,
     DoubleType,
     While,
+    For,
     If,
     Elif,
     Else,
     Print,
+    Funct,
+    Return,
 
     // Literals
     Number(i64),
@@ -55,6 +58,7 @@ pub enum Token {
 }
 
 // The lexer takes source code and turns it into a stream of tokens
+#[derive(Clone)]
 pub struct Lexer {
     // All characters of the input source
     input: Vec<char>,
@@ -135,7 +139,48 @@ impl Lexer {
             Some('+') => Token::Plus,
             Some('-') => Token::Minus,
             Some('*') => Token::Star,
-            Some('/') => Token::Slash,
+            // Handle '/' for division or comments
+            Some('/') => {
+                match self.peek() {
+                    // Single-line comment //
+                    Some('/') => {
+                        self.advance(); // consume second '/'
+                                        // Skip until end of line
+                        while let Some(c) = self.peek() {
+                            if c == '\n' {
+                                break;
+                            }
+                            self.advance();
+                        }
+                        // Recursively get the next token after the comment
+                        self.next_token()
+                    }
+                    // Multi-line comment /*
+                    Some('*') => {
+                        self.advance(); // consume '*'
+                        let mut depth = 1;
+
+                        while depth > 0 {
+                            match self.advance() {
+                                Some('/') if self.peek() == Some('*') => {
+                                    self.advance(); // consume '*'
+                                    depth += 1; // nested comment
+                                }
+                                Some('*') if self.peek() == Some('/') => {
+                                    self.advance(); // consume '/'
+                                    depth -= 1; // end of comment block
+                                }
+                                None => break, // End of input
+                                _ => {}        // continue
+                            }
+                        }
+                        // Recursively get the next token after the comment
+                        self.next_token()
+                    }
+                    // Regular division
+                    _ => Token::Slash,
+                }
+            }
             Some('%') => Token::Percent,
             Some(';') => Token::Semicolon,
             Some('(') => Token::LParen,
@@ -205,9 +250,12 @@ impl Lexer {
                     "string" => Token::StringType,
                     "double" => Token::DoubleType,
                     "while" => Token::While,
+                    "for" => Token::For,
                     "if" => Token::If,
                     "elif" => Token::Elif,
                     "else" => Token::Else,
+                    "funct" => Token::Funct,
+                    "return" => Token::Return,
                     "and" => Token::And,
                     "or" => Token::Or,
                     "true" => Token::BoolLiteral(true),

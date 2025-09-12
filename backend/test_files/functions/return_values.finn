@@ -1,0 +1,28 @@
+// Test function return values
+
+funct getFive(): int {
+    return 5;
+}
+
+funct add(a: int, b: int): int {
+    return a + b;
+}
+
+funct earlyReturn(): int {
+    return 42;
+    woof("Should not print");
+}
+
+funct nestedReturn(x: int): int {
+    if (x > 0) {
+        return x;
+    } else {
+        return -x;
+    }
+}
+
+woof(getFive()); // Should print 5
+woof(add(2, 3)); // Should print 5
+woof(earlyReturn()); // Should print 42
+woof(nestedReturn(-7)); // Should print 7
+woof(nestedReturn(8)); // Should print 8
