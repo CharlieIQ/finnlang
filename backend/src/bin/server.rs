@@ -2,7 +2,9 @@ use axum::{routing::post, Json, Router};
 use finnlang::run_finn_code;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
+use std::time::Duration;
 use tower_http::cors::{Any, CorsLayer};
+use tokio::time::timeout;
 
 #[derive(Deserialize)]
 struct RunRequest {
@@ -17,15 +19,25 @@ struct RunResponse {
 }
 
 async fn run_code(Json(payload): Json<RunRequest>) -> Json<RunResponse> {
-    match run_finn_code(&payload.code) {
-        Ok(output) => Json(RunResponse {
+    // Add timeout to prevent infinite loops
+    let result = timeout(Duration::from_secs(5), async {
+        run_finn_code(&payload.code)
+    }).await;
+    
+    match result {
+        Ok(Ok(output)) => Json(RunResponse {
             output,
             error: None,
             success: true,
         }),
-        Err(error) => Json(RunResponse {
+        Ok(Err(error)) => Json(RunResponse {
             output: String::new(),
             error: Some(error.to_string()),
+            success: false,
+        }),
+        Err(_) => Json(RunResponse {
+            output: String::new(),
+            error: Some("Code execution timed out (5 seconds)".to_string()),
             success: false,
         }),
     }

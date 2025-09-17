@@ -34,7 +34,8 @@ function App() {
   const runCode = async () => {
     try {
       // Send code to backend
-      const res = await fetch('http://localhost:3000/run', {
+      const backendUrl = 'https://finnlang-backend.onrender.com';
+      const res = await fetch(`${backendUrl}/run`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),
@@ -257,9 +258,9 @@ while (i < n) {
             {/* Most important feature right here! */}
             <div className="gallery-content">
               <div className="gallery-grid">
-                <img src="../photos/finn1.jpeg" alt="Finn Eating a stick" className="gallery-photo" />
-                <img src="../photos/finn2.jpeg" alt="Finn Eating a toy" className="gallery-photo" />
-                <img src="../photos/finn3.jpeg" alt="Finn Eating a toy" className="gallery-photo" />
+                <img src="./photos/finn1.jpeg" alt="Finn Eating a stick" className="gallery-photo" />
+                <img src="./photos/finn2.jpeg" alt="Finn Eating a toy" className="gallery-photo" />
+                <img src="./photos/finn3.jpeg" alt="Finn Eating a toy" className="gallery-photo" />
               </div>
             </div>
           </div>
