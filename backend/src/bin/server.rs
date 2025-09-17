@@ -33,6 +33,12 @@ async fn run_code(Json(payload): Json<RunRequest>) -> Json<RunResponse> {
 
 #[tokio::main]
 async fn main() {
+    // Get port from environment variable (Render provides this) or default to 3000
+    let port = std::env::var("PORT")
+        .unwrap_or_else(|_| "3000".to_string())
+        .parse::<u16>()
+        .expect("PORT must be a valid number");
+
     // Set up CORS to allow requests from anywhere
     let cors = CorsLayer::new()
         .allow_origin(Any) // Allow all origins (for dev; restrict in production)
@@ -40,8 +46,9 @@ async fn main() {
         .allow_headers(Any); // Allow all headers
 
     let app = Router::new().route("/run", post(run_code)).layer(cors); // Attach CORS middleware
-    // You can change the address and port as needed
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    
+    // Bind to all interfaces (0.0.0.0) so Render can access it
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
     println!("Server listening on http://{}", addr);
 
     axum::Server::bind(&addr)
