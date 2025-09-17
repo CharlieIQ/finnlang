@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 RUN useradd -m -u 1001 appuser
 WORKDIR /app
 
-# The binary is named after the package (finnlang), not server
-COPY --from=builder /app/target/release/finnlang ./server
+# Copy the server binary (built from src/bin/server.rs)
+COPY --from=builder /app/target/release/server ./server
 RUN chmod +x ./server
 RUN chown appuser:appuser /app/server
 
