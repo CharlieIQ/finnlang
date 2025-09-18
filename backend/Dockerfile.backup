@@ -1,0 +1,36 @@
+FROM rust:1.70 as builder
+WORKDIR /app
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+
+# Build specifically the server binary
+RUN cargo build --release --bin server
+
+# Debug: List what was built
+RUN ls -la /app/target/release/
+RUN file /app/target/release/server
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy the server binary
+COPY --from=builder /app/target/release/server /app/server
+
+# Debug: Verify copy
+RUN ls -la /app/
+RUN file /app/server
+
+# Make it executable
+RUN chmod +x /app/server
+
+# Create non-root user
+RUN useradd -m -u 1001 appuser
+RUN chown appuser:appuser /app/server
+
+USER appuser
+EXPOSE 3000
+
+# Use absolute path
+CMD ["/app/server"]

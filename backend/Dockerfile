@@ -4,6 +4,9 @@ COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 RUN cargo build --release
 
+# Debug: List what was actually built
+RUN ls -la /app/target/release/
+
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
@@ -13,6 +16,11 @@ WORKDIR /app
 
 # Copy the server binary (built from src/bin/server.rs)
 COPY --from=builder /app/target/release/server ./server
+
+# Debug: Check what we copied
+RUN ls -la /app/
+RUN file ./server
+
 RUN chmod +x ./server
 RUN chown appuser:appuser /app/server
 
